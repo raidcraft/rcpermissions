@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 /**
  * @author Silthus
@@ -27,9 +26,6 @@ public class PlayerListener implements Listener {
 
         // re-register player for world permissions
         plugin.getPlayerManager().register(event.getPlayer());
-        for (PermissionAttachmentInfo node : event.getPlayer().getEffectivePermissions()) {
-            event.getPlayer().sendMessage(node.getPermission() + ": " + node.getValue());
-        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
