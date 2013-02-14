@@ -11,6 +11,17 @@ public interface Group {
     // Gets this group's actual name
     public String getName();
 
+    public String getGlobalMasterPermission();
+
+    /**
+     * Returns the master permission string for this group on the specified world
+     *
+     * @param world The name of the world we're fetching the permission master for
+     *
+     * @return A string consisting of this group's name and the specified world, prefixed by master -> "master.[group name].[world]"
+     */
+    public String getMasterPermission(String world);
+
     /**
      * Gets all permissions that are attached to this group.
      *
@@ -28,15 +39,6 @@ public interface Group {
      * @return true if the group has the permission, otherwise false
      */
     public boolean hasPermission(String node, String world);
-
-    /**
-     * Returns the master permission string for this group on the specified world
-     *
-     * @param world The name of the world we're fetching the permission master for
-     *
-     * @return A string consisting of this group's name and the specified world, prefixed by master -> "master.[group name].[world]"
-     */
-    public String getMasterPermission(String world);
 
     /**
      * Adds the specified permission to the list for the specified world. If world is null, adds to the group's global permission list

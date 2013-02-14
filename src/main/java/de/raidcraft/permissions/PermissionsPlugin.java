@@ -21,14 +21,14 @@ public class PermissionsPlugin extends BasePlugin {
 
         registerEvents(new PlayerListener(this));
 
-        // lets wait 5 ticks after all plugins loaded and then register all permissions from all providers
+        // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
         getServer().getScheduler().runTaskLater(this, new Runnable() {
             public void run() {
 
                 registerPermissions();
                 updatePermissions();
             }
-        }, 5L);
+        }, 1L);
     }
 
     @Override
@@ -68,7 +68,6 @@ public class PermissionsPlugin extends BasePlugin {
 
         playerManager = new PlayerManager(this);
         groupManager = new GroupManager(this);
-        playerManager.reload();
     }
 
     private void updatePermissions() {

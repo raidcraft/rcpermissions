@@ -2,10 +2,11 @@ package de.raidcraft.permissions.groups;
 
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.provider.PermissionsProvider;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -21,33 +22,32 @@ public class SimpleGroup implements Group {
     private final PermissionsProvider provider;
     // the name of this group
     private final String name;
-    // maps the worlds to the permission nodes of that world
-    private final Map<String, Set<String>> permissions;
+    private final Map<String, Set<String>> worldPermissions;
+    private final Set<String> globalPermissions;
 
-    public SimpleGroup(PermissionsProvider provider, String name, Map<String, Set<String>> permissions) {
+    public SimpleGroup(PermissionsProvider provider, String name, Map<String, Set<String>> permissions, String... globalPermissions) {
 
         this.provider = provider;
         this.name = name;
-        this.permissions = permissions;
+        this.worldPermissions = permissions;
+        this.globalPermissions = new HashSet<>(Arrays.asList(globalPermissions));
+    }
+
+    protected void registerPermissions() {
 
         BasePlugin plugin = provider.getPlugin();
 
         for (World world : plugin.getServer().getWorlds()) {
 
-            String masterPermission = getMasterPermission(world.getName());
-            Permission worldPerm = plugin.getServer().getPluginManager().getPermission(masterPermission);
-            if (worldPerm == null) {
-                worldPerm = new Permission(masterPermission);
-            }
-            // clear out all existing permissions
-            worldPerm.setDefault(PermissionDefault.FALSE);
-            worldPerm.getChildren().clear();
+            // this was already defined in the group manager
+            Permission worldNode = plugin.getServer().getPluginManager().getPermission(getMasterPermission(world.getName()));
 
             // all the children we will register in bukkit
             Map<String, Boolean> children = new LinkedHashMap<>();
 
-            if (permissions.containsKey(world.getName())) {
-                for (String node : permissions.get(world.getName())) {
+            if (worldPermissions.containsKey(world.getName())) {
+
+                for (String node : worldPermissions.get(world.getName())) {
                     if (node.startsWith("-")) {
                         children.put(node.substring(1), false);
                     } else {
@@ -56,16 +56,18 @@ public class SimpleGroup implements Group {
                 }
             }
 
-            if (!children.containsKey("group." + name)) {
-                children.put("group." + name, true);
+            // also add all global permissions
+            for (String node : globalPermissions) {
+                if (node.startsWith("-")) {
+                    children.put(node.substring(1), false);
+                } else {
+                    children.put(node, true);
+                }
             }
-            // actually register all the permissions in bukkit
-            worldPerm.getChildren().putAll(children);
 
-            if (plugin.getServer().getPluginManager().getPermission(worldPerm.getName()) == null) {
-                plugin.getServer().getPluginManager().addPermission(worldPerm);
-            }
-            worldPerm.recalculatePermissibles();
+            // actually register all the permissions in bukkit
+            worldNode.getChildren().putAll(children);
+            worldNode.recalculatePermissibles();
         }
     }
 
@@ -76,18 +78,24 @@ public class SimpleGroup implements Group {
     }
 
     @Override
+    public String getGlobalMasterPermission() {
+
+        return "group." + name;
+    }
+
+    @Override
     public String getMasterPermission(String world) {
 
-        return "master." + name + "." + world;
+        return "group." + name + "." + world;
     }
 
     @Override
     public Set<String> getPermissions(String world) {
 
-        if (!permissions.containsKey(world)) {
-            permissions.put(world, new HashSet<String>());
+        if (!worldPermissions.containsKey(world)) {
+            worldPermissions.put(world, new HashSet<String>());
         }
-        return Collections.unmodifiableSet(permissions.get(world));
+        return Collections.unmodifiableSet(worldPermissions.get(world));
     }
 
     @Override
@@ -110,16 +118,22 @@ public class SimpleGroup implements Group {
     public boolean addPermission(String world, String node) {
 
         if (node != null) {
-            boolean success = false;
+            boolean success;
             if (world != null && !world.equals("null")) {
-                if (!permissions.containsKey(world)) {
-                    permissions.put(world, new HashSet<String>());
+                if (!worldPermissions.containsKey(world)) {
+                    worldPermissions.put(world, new HashSet<String>());
                 }
-                success = permissions.get(world).add(node);
+                success = worldPermissions.get(world).add(node);
             } else {
-                for (String w : permissions.keySet()) {
-                    success = addPermission(w, node);
+                for (World w : Bukkit.getWorlds()) {
+                    addPermission(w.getName(), node);
                 }
+                return true;
+            }
+            if (success) {
+                Permission permission = provider.getPlugin().getServer().getPluginManager().getPermission(getMasterPermission(world));
+                permission.getChildren().put(node, true);
+                permission.recalculatePermissibles();
             }
             return success;
         }
@@ -136,13 +150,19 @@ public class SimpleGroup implements Group {
     public boolean removePermission(String world, String node) {
 
         if (node != null) {
-            boolean success = true;
+            boolean success;
             if (world != null && !world.equals("null")) {
-                success = permissions.containsKey(world) && permissions.get(world).remove(node);
+                success = worldPermissions.containsKey(world) && worldPermissions.get(world).remove(node);
             } else {
-                for (String w : permissions.keySet()) {
-                    success = removePermission(w, node);
+                for (String w : worldPermissions.keySet()) {
+                    removePermission(w, node);
                 }
+                return true;
+            }
+            if (success) {
+                Permission permission = provider.getPlugin().getServer().getPluginManager().getPermission(getMasterPermission(world));
+                permission.getChildren().remove(node);
+                permission.recalculatePermissibles();
             }
             return success;
         }
@@ -152,14 +172,14 @@ public class SimpleGroup implements Group {
     @Override
     public String toString() {
 
-        return "SimpleGroup{name=" + this.name + "}" + this.permissions.toString().hashCode();
+        return "SimpleGroup{name=" + this.name + "}" + this.worldPermissions.toString().hashCode();
     }
 
     @Override
     public int hashCode() {
 
         int hash = 7 * 19 + this.toString().hashCode();
-        hash = hash * 19 + this.permissions.size();
+        hash = hash * 19 + this.worldPermissions.size();
         return hash;
     }
 

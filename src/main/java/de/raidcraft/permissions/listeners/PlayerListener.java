@@ -6,8 +6,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 /**
  * @author Silthus
@@ -23,26 +23,13 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerLogin(PlayerLoginEvent event) {
-
-        // register player for early perm checks
-        plugin.getPlayerManager().register(event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void playerFailLogin(PlayerLoginEvent event) {
-
-        // unregister if player is prevented from joining
-        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
-            plugin.getPlayerManager().unregister(event.getPlayer().getName());
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
     public void playerJoin(PlayerJoinEvent event) {
 
         // re-register player for world permissions
         plugin.getPlayerManager().register(event.getPlayer());
+        for (PermissionAttachmentInfo node : event.getPlayer().getEffectivePermissions()) {
+            event.getPlayer().sendMessage(node.getPermission() + ": " + node.getValue());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

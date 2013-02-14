@@ -2,9 +2,6 @@ package de.raidcraft.permissions.players;
 
 import de.raidcraft.permissions.PermissionsPlugin;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,32 +26,18 @@ public class PlayerManager {
         return register(plugin.getServer().getOfflinePlayer(player));
     }
 
-    public boolean register(OfflinePlayer ply) {
+    public boolean register(OfflinePlayer offlinePlayer) {
 
-        if (ply == null || ply.getPlayer() == null) {
+        if (offlinePlayer == null || offlinePlayer.getPlayer() == null || !offlinePlayer.getPlayer().isOnline()) {
             plugin.getLogger().info("Attempted permission registration of a player that was offline or didn't exist!");
             return false;
         }
-        Player priv = players.get(ply.getName().toLowerCase());
-        if (priv == null) {
-            priv = new PermissionsPlayer(plugin, ply);
-            players.put(ply.getName().toLowerCase(), priv);
+        Player player = players.get(offlinePlayer.getName().toLowerCase());
+        if (player == null) {
+            player = new PermissionsPlayer(plugin, offlinePlayer);
+            players.put(offlinePlayer.getName().toLowerCase(), player);
         }
-        // lets add the player to all specified groups
-        for (String grp : plugin.getProvider().getPlayerGroups(priv.getName())) {
-            plugin.getGroupManager().addPlayerToGroup(priv.getName(), grp);
-        }
-        org.bukkit.entity.Player player = ply.getPlayer();
-        // clear the player's permissions
-        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
-            PermissionAttachment att = info.getAttachment();
-            if (att == null) {
-                continue;
-            }
-            att.unsetPermission(info.getPermission());
-        }
-        // build the attachment
-        priv.getAttachment().setPermission(priv.getMasterPermission(player.getWorld().getName()), true);
+        ((PermissionsPlayer)player).registerPermissions();
         return true;
     }
 
@@ -76,13 +59,7 @@ public class PlayerManager {
 
         Player player = players.remove(name.toLowerCase());
         if (player != null) {
-            for (World world : plugin.getServer().getWorlds()) {
-                String node = player.getMasterPermission(world.getName());
-                plugin.getServer().getPluginManager().removePermission(node);
-            }
-            plugin.getLogger().info(name + " was successfully unregistered.");
-        } else {
-            plugin.getLogger().info(name + " was already unregistered!");
+            player.getAttachment().remove();
         }
     }
 

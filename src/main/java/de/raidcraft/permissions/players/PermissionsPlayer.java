@@ -4,15 +4,8 @@ import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionDefault;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 /**
  * @author Silthus
@@ -21,7 +14,6 @@ public class PermissionsPlayer implements Player {
 
     private final PermissionsPlugin plugin;
     private final String name;
-    private final Map<String, Group> groups = new HashMap<>();
     private final PermissionAttachment attachment;
 
     public PermissionsPlayer(PermissionsPlugin plugin, OfflinePlayer player) {
@@ -29,14 +21,26 @@ public class PermissionsPlayer implements Player {
         this.plugin = plugin;
         this.name = player.getName().toLowerCase();
         this.attachment = player.getPlayer().addAttachment(plugin);
+    }
 
-        for (World world : plugin.getServer().getWorlds()) {
+    protected void registerPermissions() {
 
-            Permission perm = new Permission("player." + this.name + "." + world.getName(), PermissionDefault.FALSE);
-            plugin.getServer().getPluginManager().removePermission(perm);
-            perm.getChildren().clear();
-            plugin.getServer().getPluginManager().addPermission(perm);
-            perm.recalculatePermissibles();
+        org.bukkit.entity.Player player = Bukkit.getOfflinePlayer(getName()).getPlayer();
+        // clear the player's permissions
+        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
+            PermissionAttachment att = info.getAttachment();
+            if (att == null) {
+                continue;
+            }
+            att.unsetPermission(info.getPermission());
+        }
+        // unset all old permissions
+        attachment.getPermissions().clear();
+
+        // add all the main nodes of the groups
+        for (String groupName : plugin.getProvider().getPlayerGroups(getName())) {
+            Group group = plugin.getGroupManager().getGroup(groupName);
+            addGroup(group);
         }
     }
 
@@ -59,8 +63,9 @@ public class PermissionsPlayer implements Player {
         if (player == null) {
             return;
         }
-        groups.put(group.getName(), group);
-        attachment.setPermission(group.getMasterPermission(player.getWorld().getName()), true);
+        // register the global group node
+        attachment.setPermission(group.getGlobalMasterPermission(), true);
+        // attachment.setPermission(group.getMasterPermission(player.getWorld().getName()), true);
         player.recalculatePermissions();
     }
 
@@ -79,8 +84,9 @@ public class PermissionsPlayer implements Player {
         if (player == null) {
             return;
         }
-        attachment.unsetPermission(group.getMasterPermission(player.getWorld().getName()));
-        groups.remove(group.getName());
+        // register the global group node
+        attachment.unsetPermission(group.getGlobalMasterPermission());
+        // attachment.unsetPermission(group.getMasterPermission(player.getWorld().getName()));
         player.recalculatePermissions();
     }
 
@@ -90,17 +96,6 @@ public class PermissionsPlayer implements Player {
         Group g = plugin.getGroupManager().getGroup(group);
         removeGroup(g);
         return g;
-    }
-
-    @Override
-    public Set<Group> getGroups() {
-
-        return new HashSet<>(this.groups.values());
-    }
-
-    public String getMasterPermission(String world) {
-
-        return "player." + this.name + "." + world;
     }
 
 }
