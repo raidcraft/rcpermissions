@@ -61,6 +61,7 @@ public class PermissionsPlayer implements Player {
         }
         groups.put(group.getName(), group);
         attachment.setPermission(group.getMasterPermission(player.getWorld().getName()), true);
+        player.recalculatePermissions();
     }
 
     @Override
@@ -80,6 +81,7 @@ public class PermissionsPlayer implements Player {
         }
         attachment.unsetPermission(group.getMasterPermission(player.getWorld().getName()));
         groups.remove(group.getName());
+        player.recalculatePermissions();
     }
 
     @Override
