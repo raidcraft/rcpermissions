@@ -19,8 +19,6 @@ public class GroupManager {
     private PermissionsPlugin plugin;
     private String DEFAULT;
     private Map<String, Group> groupList = new HashMap<>();
-    // maps the players and all their groups they are in
-    private Map<String, Set<String>> players = new HashMap<>();
 
     public GroupManager(PermissionsPlugin plugin) {
 
@@ -52,7 +50,6 @@ public class GroupManager {
     public void clean() {
 
         groupList.clear();
-        players.clear();
     }
 
     public void reload() {
@@ -74,18 +71,26 @@ public class GroupManager {
      * Adds the specified player to the specified group
      *
      * @param player The player to change
-     * @param group  The group to set
+     * @param group  The group to add
      *
      * @return The new group for the player
      */
     public Group addPlayerToGroup(String player, String group) {
 
-        Group g = getGroup(group);
-        if (!players.containsKey(player)) {
-            players.put(player.toLowerCase(), new HashSet<String>());
-        }
-        if (g != null) players.get(player).add(g.getName());
-        return g;
+        return plugin.getPlayerManager().getPlayer(player).addGroup(group);
+    }
+
+    /**
+     * Removes the specified player from the specified group.
+     *
+     * @param player The player to change
+     * @param group  The group to remove
+     *
+     * @return The old group of the player
+     */
+    public Group removePlayerFromGroup(String player, String group) {
+
+        return plugin.getPlayerManager().getPlayer(player).removeGroup(group);
     }
 
     /**
@@ -102,15 +107,6 @@ public class GroupManager {
             return getDefaultGroup();
         }
         return groupList.get(group.toLowerCase());
-    }
-
-    public Set<Group> getPlayerGroups(String player) {
-
-        HashSet<Group> groups = new HashSet<>();
-        for (String group : players.get(player)) {
-            groups.add(getGroup(group));
-        }
-        return groups;
     }
 
     /**

@@ -1,16 +1,13 @@
 package de.raidcraft.permissions.players;
 
 import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.groups.Group;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * An player manager that handles the creation and removal of player permissions within Privileges
@@ -40,13 +37,12 @@ public class PlayerManager {
         }
         Player priv = players.get(ply.getName().toLowerCase());
         if (priv == null) {
-            priv = new PermissionsPlayer(plugin.getProvider(), ply);
+            priv = new PermissionsPlayer(plugin, ply);
             players.put(ply.getName().toLowerCase(), priv);
         }
         // lets add the player to all specified groups
-        Set<Group> groups = new HashSet<>();
-        for (String grp : priv.getGroups()) {
-            groups.add(plugin.getGroupManager().addPlayerToGroup(priv.getName(), grp));
+        for (String grp : plugin.getProvider().getPlayerGroups(priv.getName())) {
+            plugin.getGroupManager().addPlayerToGroup(priv.getName(), grp);
         }
         org.bukkit.entity.Player player = ply.getPlayer();
         // clear the player's permissions
@@ -58,11 +54,7 @@ public class PlayerManager {
             att.unsetPermission(info.getPermission());
         }
         // build the attachment
-        PermissionAttachment attachment = player.addAttachment(plugin);
-        for (Group group : groups) {
-            attachment.setPermission(group.getMasterPermission(player.getWorld().getName()), true);
-        }
-        attachment.setPermission(priv.getMasterPermission(player.getWorld().getName()), true);
+        priv.getAttachment().setPermission(priv.getMasterPermission(player.getWorld().getName()), true);
         return true;
     }
 
@@ -98,7 +90,7 @@ public class PlayerManager {
 
         Player player = players.get(name.toLowerCase());
         if (player == null) {
-            player = new PermissionsPlayer(plugin.getProvider(), plugin.getServer().getOfflinePlayer(name));
+            player = new PermissionsPlayer(plugin, plugin.getServer().getOfflinePlayer(name));
         }
         return player;
     }
