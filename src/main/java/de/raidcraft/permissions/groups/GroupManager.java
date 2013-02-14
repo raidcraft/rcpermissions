@@ -25,8 +25,10 @@ public class GroupManager {
     public GroupManager(PermissionsPlugin plugin) {
 
         this.plugin = plugin;
-        this.DEFAULT = plugin.getProvider().getDefaultGroup().getName();
-        load();
+        Group defaultGroup = plugin.getProvider().getDefaultGroup();
+        if (defaultGroup != null) {
+            this.DEFAULT = defaultGroup.getName();
+        }
     }
 
     private void load() {
@@ -43,6 +45,7 @@ public class GroupManager {
             group.addPermission(null, perm.getName());
 
             groupList.put(group.getName(), group);
+            plugin.getLogger().info("Permission Group loaded: " + group.getName());
         }
     }
 

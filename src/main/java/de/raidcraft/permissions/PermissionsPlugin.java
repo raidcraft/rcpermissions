@@ -5,8 +5,6 @@ import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
 import de.raidcraft.permissions.provider.PermissionsProvider;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 /**
  * @author Silthus
@@ -21,11 +19,7 @@ public class PermissionsPlugin extends BasePlugin {
     @Override
     public void enable() {
 
-        registerPermissions();
-
         registerEvents(new PlayerListener(this));
-
-        getServer().getPluginManager().getPermission("rcpermissions.*").setDefault(PermissionDefault.OP);
 
         // lets wait 5 ticks after all plugins loaded and then register all permissions from all providers
         getServer().getScheduler().runTaskLater(this, new Runnable() {
@@ -53,7 +47,7 @@ public class PermissionsPlugin extends BasePlugin {
 
     public <T extends BasePlugin> void registerProvider(PermissionsProvider<T> provider) {
 
-        if (provider != null) {
+        if (this.provider != null) {
             getLogger().severe(provider.getPlugin().getName() + " tried to register as Permission Provider when "
                     + this.provider.getPlugin().getName() + " already registered!");
         } else {
@@ -75,17 +69,6 @@ public class PermissionsPlugin extends BasePlugin {
         playerManager = new PlayerManager(this);
         groupManager = new GroupManager(this);
         playerManager.reload();
-        registerDynamicPermissions();
-    }
-
-    private void registerDynamicPermissions() {
-
-        Permission root = new Permission("rcpermissions.*");
-        if (getServer().getPluginManager().getPermission(root.getName()) == null) {
-            getServer().getPluginManager().addPermission(root);
-        }
-        root.getChildren().put("rcpermissions.admins", true);
-        root.recalculatePermissibles();
     }
 
     private void updatePermissions() {
