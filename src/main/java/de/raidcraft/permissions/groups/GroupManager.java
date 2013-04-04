@@ -114,6 +114,31 @@ public class GroupManager {
     }
 
     /**
+     * Checks if the given player is in the specified group.
+     *
+     * @param world to check
+     * @param player to check
+     * @param group to check for
+     * @return true if player is in group
+     */
+    public boolean isPlayerInGroup(String world, String player, String group) {
+
+        return getGroup(group).isPlayerInGroup(world, player);
+    }
+
+    /**
+     * Checks if the given player is in the specified group.
+     *
+     * @param player to check
+     * @param group to check for
+     * @return true if player is in group
+     */
+    public boolean isPlayerInGroup(String player, String group) {
+
+        return getGroup(group).isPlayerInGroup(player);
+    }
+
+    /**
      * Gets the specified group by name (case-insensitive)
      *
      * @param group The group's name.

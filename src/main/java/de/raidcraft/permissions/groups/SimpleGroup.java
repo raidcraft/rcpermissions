@@ -4,6 +4,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.provider.PermissionsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 import java.util.Arrays;
@@ -167,6 +168,20 @@ public class SimpleGroup implements Group {
             return success;
         }
         return false;
+    }
+
+    @Override
+    public boolean isPlayerInGroup(String world, String player) {
+
+        Player bukkitPlayer = Bukkit.getPlayer(player);
+        return bukkitPlayer != null && bukkitPlayer.hasPermission(getMasterPermission(world));
+    }
+
+    @Override
+    public boolean isPlayerInGroup(String player) {
+
+        Player bukkitPlayer = Bukkit.getPlayer(player);
+        return bukkitPlayer != null && bukkitPlayer.hasPermission(getGlobalMasterPermission());
     }
 
     @Override

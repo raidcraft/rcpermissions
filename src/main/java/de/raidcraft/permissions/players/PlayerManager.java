@@ -72,4 +72,9 @@ public class PlayerManager {
         return player;
     }
 
+    public boolean hasPermission(String playerName, String worldName, String node) {
+
+        Player player = getPlayer(playerName);
+        return player != null && player.hasPermission(node);
+    }
 }

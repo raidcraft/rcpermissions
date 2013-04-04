@@ -98,4 +98,9 @@ public class PermissionsPlayer implements Player {
         return g;
     }
 
+    @Override
+    public boolean hasPermission(String node) {
+
+        return getAttachment().getPermissible().hasPermission(node);
+    }
 }

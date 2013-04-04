@@ -22,4 +22,5 @@ public interface Player {
 
     public Group removeGroup(String group);
 
+    public boolean hasPermission(String node);
 }

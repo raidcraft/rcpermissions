@@ -66,4 +66,20 @@ public interface Group {
     // same as above but sets world to null removing the node from all worlds
     public boolean removePermission(String node);
 
+    /**
+     * Checks if the player has the global group permission.
+     *
+     * @param player to check group for
+     * @return true if player is in group
+     */
+    public boolean isPlayerInGroup(String player);
+
+    /**
+     * Checks if the player is in this permission group.
+     *
+     * @param world to check
+     * @param player to check group for
+     * @return true if player is in group
+     */
+    public boolean isPlayerInGroup(String world, String player);
 }
