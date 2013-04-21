@@ -21,10 +21,10 @@ public class PlayerListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void playerJoin(PlayerJoinEvent event) {
 
-        // re-register player for world permissions
+        // register player for world permissions
         plugin.getPlayerManager().register(event.getPlayer());
     }
 
