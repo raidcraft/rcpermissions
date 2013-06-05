@@ -14,18 +14,23 @@ public class PermissionsPlayer implements Player {
 
     private final PermissionsPlugin plugin;
     private final String name;
-    private final PermissionAttachment attachment;
+    private PermissionAttachment attachment;
 
     public PermissionsPlayer(PermissionsPlugin plugin, OfflinePlayer player) {
 
         this.plugin = plugin;
         this.name = player.getName().toLowerCase();
-        this.attachment = player.getPlayer().addAttachment(plugin);
+        if (player.isOnline()) {
+            this.attachment = player.getPlayer().addAttachment(plugin);
+        }
     }
 
     protected void registerPermissions() {
 
         org.bukkit.entity.Player player = Bukkit.getOfflinePlayer(getName()).getPlayer();
+        if (attachment == null) {
+            attachment = player.getPlayer().addAttachment(plugin);
+        }
         // clear the player's permissions
         for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
             PermissionAttachment att = info.getAttachment();
@@ -101,6 +106,6 @@ public class PermissionsPlayer implements Player {
     @Override
     public boolean hasPermission(String node) {
 
-        return getAttachment().getPermissible().hasPermission(node);
+        return attachment != null && getAttachment().getPermissible().hasPermission(node);
     }
 }
