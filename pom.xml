@@ -16,7 +16,7 @@
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+            <url>http://dev.raid-craft.de/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 
