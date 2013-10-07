@@ -1,7 +1,7 @@
 package de.raidcraft.permissions.groups;
 
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.permissions.provider.PermissionsProvider;
+import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -20,13 +20,13 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class SimpleGroup implements Group {
 
-    private final PermissionsProvider provider;
+    private final RCPermissionsProvider provider;
     // the name of this group
     private final String name;
     private final Map<String, Set<String>> worldPermissions;
     private final Set<String> globalPermissions;
 
-    public SimpleGroup(PermissionsProvider provider, String name, Map<String, Set<String>> permissions, String... globalPermissions) {
+    public SimpleGroup(RCPermissionsProvider provider, String name, Map<String, Set<String>> permissions, String... globalPermissions) {
 
         this.provider = provider;
         this.name = name;

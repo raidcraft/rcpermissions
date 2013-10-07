@@ -1,17 +1,23 @@
 package de.raidcraft.permissions;
 
+import com.sk89q.wepif.PermissionsProvider;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
-import de.raidcraft.permissions.provider.PermissionsProvider;
+import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 /**
  * @author Silthus
  */
-public class PermissionsPlugin extends BasePlugin {
+public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
 
-    private PermissionsProvider<? extends BasePlugin> provider;
+    private RCPermissionsProvider<? extends BasePlugin> provider;
     // managers and handlers
     private PlayerManager playerManager;
     private GroupManager groupManager;
@@ -27,6 +33,7 @@ public class PermissionsPlugin extends BasePlugin {
 
                 registerPermissions();
                 updatePermissions();
+
             }
         }, 1L);
     }
@@ -45,7 +52,7 @@ public class PermissionsPlugin extends BasePlugin {
         updatePermissions();
     }
 
-    public <T extends BasePlugin> void registerProvider(PermissionsProvider<T> provider) {
+    public <T extends BasePlugin> void registerProvider(RCPermissionsProvider<T> provider) {
 
         if (this.provider != null) {
             getLogger().severe(provider.getPlugin().getName() + " tried to register as Permission Provider when "
@@ -55,7 +62,7 @@ public class PermissionsPlugin extends BasePlugin {
         }
     }
 
-    public PermissionsProvider<? extends BasePlugin> getProvider() {
+    public RCPermissionsProvider<? extends BasePlugin> getProvider() {
 
         if (provider == null) {
             getLogger().severe("No provider was registered! Shutting down the server to be save...");
@@ -86,4 +93,63 @@ public class PermissionsPlugin extends BasePlugin {
         return this.groupManager;
     }
 
+    // WORLDEDIT PERMISSION PROVIDER METHODS
+
+    @Override
+    public boolean hasPermission(String name, String permission) {
+
+        Player player = Bukkit.getPlayer(name);
+        if(player == null) return false;
+
+        return player.hasPermission(permission);
+    }
+
+    @Override
+    public boolean hasPermission(String worldName, String name, String permission) {
+
+        Player player = Bukkit.getPlayer(name);
+        if(player == null) return false;
+
+        return player.hasPermission(permission);
+    }
+
+    @Override
+    public boolean inGroup(String player, String group) {
+
+        Set<String> groups = provider.getPlayerGroups(player);
+        if(groups == null) return false;
+        return groups.contains(group);
+    }
+
+    @Override
+    public String[] getGroups(String player) {
+
+        Set<String> groups = provider.getPlayerGroups(player);
+        if(groups == null) return new String[]{};
+        return groups.toArray(new String[groups.size()]);
+    }
+
+    @Override
+    public boolean hasPermission(OfflinePlayer player, String permission) {
+
+        return hasPermission(player.getName(), permission);
+    }
+
+    @Override
+    public boolean hasPermission(String worldName, OfflinePlayer player, String permission) {
+
+        return hasPermission(worldName, player.getName(), permission);
+    }
+
+    @Override
+    public boolean inGroup(OfflinePlayer player, String group) {
+
+        return inGroup(player.getName(), group);
+    }
+
+    @Override
+    public String[] getGroups(OfflinePlayer player) {
+
+        return getGroups(player.getName());
+    }
 }

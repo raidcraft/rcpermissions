@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Silthus
  */
-public interface PermissionsProvider<T extends BasePlugin> {
+public interface RCPermissionsProvider<T extends BasePlugin> {
 
     public T getPlugin();
 
