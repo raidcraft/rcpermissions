@@ -101,7 +101,18 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         Player player = Bukkit.getPlayer(name);
         if(player == null) return false;
 
-        return player.hasPermission(permission);
+        String[] permParts = permission.split(".");
+
+        if(player.hasPermission(permission)) {
+            return true;
+        }
+        else if(permParts.length > 0 && permParts[0] != null) {
+            if(player.hasPermission(permParts[0] + ".*")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
