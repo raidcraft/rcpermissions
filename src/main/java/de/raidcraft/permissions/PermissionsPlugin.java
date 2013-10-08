@@ -121,7 +121,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         Player player = Bukkit.getPlayer(name);
         if(player == null) return false;
 
-        return player.hasPermission(permission);
+        return hasPermission(name, permission);
     }
 
     @Override
