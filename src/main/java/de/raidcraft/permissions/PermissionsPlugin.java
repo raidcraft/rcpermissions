@@ -1,6 +1,7 @@
 package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsProvider;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
@@ -107,9 +108,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
             return true;
         }
         else if(permParts.length > 0 && permParts[0] != null) {
-            if(player.hasPermission(permParts[0] + ".*")) {
-                return true;
-            }
+            RaidCraft.LOGGER.info("Permisson '" + permParts[0] + ".*' requested for " + name + "");
+            return player.hasPermission(permParts[0] + ".*");
         }
 
         return false;
