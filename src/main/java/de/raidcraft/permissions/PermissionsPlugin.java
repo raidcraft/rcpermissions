@@ -1,7 +1,6 @@
 package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsProvider;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
@@ -99,20 +98,16 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Override
     public boolean hasPermission(String name, String permission) {
 
-        RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
+        // RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
         Player player = Bukkit.getPlayer(name);
         if(player == null) return false;
-        RaidCraft.LOGGER.info("DEBUG 0");
-        String[] permParts = permission.split(".");
-        RaidCraft.LOGGER.info("DEBUG 0.5: " + permParts);
+        String[] permParts = permission.split("\\.");
         if(player.hasPermission(permission)) {
             return true;
         }
         else if(permParts.length > 0 && permParts[0] != null) {
-            RaidCraft.LOGGER.info("DEBUG 1");
             return player.hasPermission(permParts[0] + ".*");
         }
-        RaidCraft.LOGGER.info("DEBUG 2");
         return false;
     }
 
