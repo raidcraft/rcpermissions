@@ -18,7 +18,7 @@ public interface Group {
      *
      * @param world The name of the world we're fetching the permission master for
      *
-     * @return A string consisting of this group's name and the specified world, prefixed by master -> "master.[group name].[world]"
+     * @return A string consisting of this group's name and the specified world, prefixed by master "master.[group name].[world]"
      */
     public String getMasterPermission(String world);
 
