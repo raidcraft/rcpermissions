@@ -35,7 +35,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
                 updatePermissions();
 
             }
-        }, 1L);
+        }, 20L);
     }
 
     @Override
