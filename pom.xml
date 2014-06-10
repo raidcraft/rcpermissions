@@ -13,8 +13,15 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>raidcraft</id>
+            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
