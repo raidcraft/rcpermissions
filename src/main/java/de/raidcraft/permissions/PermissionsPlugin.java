@@ -6,7 +6,6 @@ import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
-import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -97,7 +96,6 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // WORLDEDIT PERMISSION PROVIDER METHODS
 
     @Override
-    // TODO: UUID
     public boolean hasPermission(String name, String permission) {
 
         // RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
@@ -114,7 +112,6 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     }
 
     @Override
-    // TODO: UUID
     public boolean hasPermission(String worldName, String name, String permission) {
 
         Player player = Bukkit.getPlayer(name);
@@ -124,19 +121,17 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     }
 
     @Override
-    // TODO: UUID
     public boolean inGroup(String player, String group) {
 
-        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
+        Set<String> groups = provider.getPlayerGroups(player);
         if(groups == null) return false;
         return groups.contains(group);
     }
 
     @Override
-    // TODO: UUID
     public String[] getGroups(String player) {
 
-        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
+        Set<String> groups = provider.getPlayerGroups(player);
         if(groups == null) return new String[]{};
         return groups.toArray(new String[groups.size()]);
     }

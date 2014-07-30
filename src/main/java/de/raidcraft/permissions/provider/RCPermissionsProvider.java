@@ -5,7 +5,6 @@ import de.raidcraft.permissions.groups.Group;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Defines a provider that takes care of the saving and loading of permission nodes.
@@ -36,5 +35,5 @@ public interface RCPermissionsProvider<T extends BasePlugin> {
      * @param player to get the groups for
      * @return Groups of the player
      */
-    public Set<String> getPlayerGroups(UUID player);
+    public Set<String> getPlayerGroups(String player);
 }
