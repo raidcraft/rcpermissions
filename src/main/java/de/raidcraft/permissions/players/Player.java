@@ -3,6 +3,8 @@ package de.raidcraft.permissions.players;
 import de.raidcraft.permissions.groups.Group;
 import org.bukkit.permissions.PermissionAttachment;
 
+import java.util.UUID;
+
 /**
  * Represents a player registered with the Privileges plugin
  *
@@ -10,7 +12,7 @@ import org.bukkit.permissions.PermissionAttachment;
  */
 public interface Player {
 
-    public String getName();
+    public UUID getPlayerId();
 
     public PermissionAttachment getAttachment();
 
