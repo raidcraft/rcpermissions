@@ -29,14 +29,14 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         registerEvents(new PlayerListener(this));
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().runTaskLater(this, new Runnable() {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             public void run() {
 
                 registerPermissions();
                 updatePermissions();
 
             }
-        }, 20L);
+        }, 2 * 20);
     }
 
     @Override
@@ -102,12 +102,11 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
 
         // RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
         Player player = Bukkit.getPlayer(name);
-        if(player == null) return false;
+        if (player == null) return false;
         String[] permParts = permission.split("\\.");
-        if(player.hasPermission(permission)) {
+        if (player.hasPermission(permission)) {
             return true;
-        }
-        else if(permParts.length > 0 && permParts[0] != null) {
+        } else if (permParts.length > 0 && permParts[0] != null) {
             return player.hasPermission(permParts[0] + ".*");
         }
         return false;
@@ -118,7 +117,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     public boolean hasPermission(String worldName, String name, String permission) {
 
         Player player = Bukkit.getPlayer(name);
-        if(player == null) return false;
+        if (player == null) return false;
 
         return hasPermission(name, permission);
     }
@@ -128,7 +127,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     public boolean inGroup(String player, String group) {
 
         Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
-        if(groups == null) return false;
+        if (groups == null) return false;
         return groups.contains(group);
     }
 
@@ -137,7 +136,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     public String[] getGroups(String player) {
 
         Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
-        if(groups == null) return new String[]{};
+        if (groups == null) return new String[]{};
         return groups.toArray(new String[groups.size()]);
     }
 
