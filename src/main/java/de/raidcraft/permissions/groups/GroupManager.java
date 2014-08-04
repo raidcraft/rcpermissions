@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * A group manager that handles the creation and removal of group permissions in Privileges
@@ -90,52 +91,52 @@ public class GroupManager {
     /**
      * Adds the specified player to the specified group
      *
-     * @param player The player to change
+     * @param playerId The player to change
      * @param group  The group to add
      *
      * @return The new group for the player
      */
-    public Group addPlayerToGroup(String player, String group) {
+    public Group addPlayerToGroup(UUID playerId, String group) {
 
-        return plugin.getPlayerManager().getPlayer(player).addGroup(group);
+        return plugin.getPlayerManager().getPlayer(playerId).addGroup(group);
     }
 
     /**
      * Removes the specified player from the specified group.
      *
-     * @param player The player to change
+     * @param playerId The player to change
      * @param group  The group to remove
      *
      * @return The old group of the player
      */
-    public Group removePlayerFromGroup(String player, String group) {
+    public Group removePlayerFromGroup(UUID playerId, String group) {
 
-        return plugin.getPlayerManager().getPlayer(player).removeGroup(group);
+        return plugin.getPlayerManager().getPlayer(playerId).removeGroup(group);
     }
 
     /**
      * Checks if the given player is in the specified group.
      *
      * @param world to check
-     * @param player to check
+     * @param playerId to check
      * @param group to check for
      * @return true if player is in group
      */
-    public boolean isPlayerInGroup(String world, String player, String group) {
+    public boolean isPlayerInGroup(String world, UUID playerId, String group) {
 
-        return getGroup(group).isPlayerInGroup(world, player);
+        return getGroup(group).isPlayerInGroup(world, playerId);
     }
 
     /**
      * Checks if the given player is in the specified group.
      *
-     * @param player to check
+     * @param playerId to check
      * @param group to check for
      * @return true if player is in group
      */
-    public boolean isPlayerInGroup(String player, String group) {
+    public boolean isPlayerInGroup(UUID playerId, String group) {
 
-        return getGroup(group).isPlayerInGroup(player);
+        return getGroup(group).isPlayerInGroup(playerId);
     }
 
     /**

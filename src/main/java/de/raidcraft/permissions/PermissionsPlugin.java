@@ -34,6 +34,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
 
                 registerPermissions();
                 updatePermissions();
+                new VaultPerm(PermissionsPlugin.this);
 
             }
         }, 2 * 20);
@@ -97,6 +98,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // WORLDEDIT PERMISSION PROVIDER METHODS
 
     @Override
+    @Deprecated
     // TODO: UUID
     public boolean hasPermission(String name, String permission) {
 
@@ -113,6 +115,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     }
 
     @Override
+    @Deprecated
     // TODO: UUID
     public boolean hasPermission(String worldName, String name, String permission) {
 
@@ -123,6 +126,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     }
 
     @Override
+    @Deprecated
     // TODO: UUID
     public boolean inGroup(String player, String group) {
 
@@ -132,6 +136,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     }
 
     @Override
+    @Deprecated
     // TODO: UUID
     public String[] getGroups(String player) {
 
