@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -171,16 +172,16 @@ public class SimpleGroup implements Group {
     }
 
     @Override
-    public boolean isPlayerInGroup(String world, String player) {
+    public boolean isPlayerInGroup(String world, UUID playerId) {
 
-        Player bukkitPlayer = Bukkit.getPlayer(player);
+        Player bukkitPlayer = Bukkit.getPlayer(playerId);
         return bukkitPlayer != null && bukkitPlayer.hasPermission(getMasterPermission(world));
     }
 
     @Override
-    public boolean isPlayerInGroup(String player) {
+    public boolean isPlayerInGroup(UUID playerId) {
 
-        Player bukkitPlayer = Bukkit.getPlayer(player);
+        Player bukkitPlayer = Bukkit.getPlayer(playerId);
         return bukkitPlayer != null && bukkitPlayer.hasPermission(getGlobalMasterPermission());
     }
 
