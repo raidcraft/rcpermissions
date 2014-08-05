@@ -26,11 +26,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>vault</artifactId>
-            <version>${rc.version}</version>
-        </dependency>
-        <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>raidcraft-api</artifactId>
             <version>${rc.version}</version>
