@@ -27,7 +27,7 @@
     <dependencies>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
+            <artifactId>vault</artifactId>
             <version>${rc.version}</version>
         </dependency>
         <dependency>
