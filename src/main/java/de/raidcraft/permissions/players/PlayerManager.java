@@ -1,10 +1,12 @@
 package de.raidcraft.permissions.players;
 
 import de.raidcraft.permissions.PermissionsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * An player manager that handles the creation and removal of player permissions within Privileges
@@ -14,16 +16,16 @@ import java.util.Map;
 public class PlayerManager {
 
     private final PermissionsPlugin plugin;
-    private final Map<String, Player> players = new HashMap<>();
+    private final Map<UUID, Player> players = new HashMap<>();
 
     public PlayerManager(PermissionsPlugin plugin) {
 
         this.plugin = plugin;
     }
 
-    public boolean register(String player) {
+    public boolean register(UUID playerId) {
 
-        return register(plugin.getServer().getOfflinePlayer(player));
+        return register(plugin.getServer().getOfflinePlayer(playerId));
     }
 
     public boolean register(OfflinePlayer offlinePlayer) {
@@ -32,49 +34,49 @@ public class PlayerManager {
             plugin.getLogger().info("Attempted permission registration of a player that was offline or didn't exist!");
             return false;
         }
-        Player player = players.get(offlinePlayer.getName().toLowerCase());
+        Player player = players.get(offlinePlayer.getUniqueId());
         if (player == null) {
             player = new PermissionsPlayer(plugin, offlinePlayer);
-            players.put(offlinePlayer.getName().toLowerCase(), player);
+            players.put(offlinePlayer.getUniqueId(), player);
         }
-        ((PermissionsPlayer)player).registerPermissions();
+        ((PermissionsPlayer) player).registerPermissions();
         return true;
     }
 
     public void disable() {
 
-        for (org.bukkit.entity.Player p : plugin.getServer().getOnlinePlayers()) {
-            unregister(p.getName());
+        for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+            unregister(p.getUniqueId());
         }
     }
 
     public void reload() {
 
-        for (org.bukkit.entity.Player p : plugin.getServer().getOnlinePlayers()) {
+        for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
             register(p);
         }
     }
 
-    public void unregister(String name) {
+    public void unregister(UUID playerId) {
 
-        Player player = players.remove(name.toLowerCase());
+        Player player = players.remove(playerId);
         if (player != null) {
             player.getAttachment().remove();
         }
     }
 
-    public Player getPlayer(String name) {
+    public Player getPlayer(UUID playerId) {
 
-        Player player = players.get(name.toLowerCase());
+        Player player = players.get(playerId);
         if (player == null) {
-            player = new PermissionsPlayer(plugin, plugin.getServer().getOfflinePlayer(name));
+            player = new PermissionsPlayer(plugin, Bukkit.getOfflinePlayer(playerId));
         }
         return player;
     }
 
-    public boolean hasPermission(String playerName, String worldName, String node) {
+    public boolean hasPermission(UUID playerId, String worldName, String node) {
 
-        Player player = getPlayer(playerName);
+        Player player = getPlayer(playerId);
         return player != null && player.hasPermission(node);
     }
 }

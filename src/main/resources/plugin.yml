@@ -3,4 +3,4 @@ main: de.raidcraft.permissions.PermissionsPlugin
 version: ${project.version}#${build.number}
 author: Silthus
 website: www.raid-craft.de
-depend: [RaidCraft-API]
+depend: [RaidCraft-API, Vault]

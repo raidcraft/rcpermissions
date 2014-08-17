@@ -2,10 +2,13 @@ package de.raidcraft.permissions.players;
 
 import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -13,13 +16,15 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 public class PermissionsPlayer implements Player {
 
     private final PermissionsPlugin plugin;
-    private final String name;
+    @Getter
+    private final UUID playerId;
+    @Getter
     private PermissionAttachment attachment;
 
     public PermissionsPlayer(PermissionsPlugin plugin, OfflinePlayer player) {
 
         this.plugin = plugin;
-        this.name = player.getName().toLowerCase();
+        this.playerId = player.getUniqueId();
         if (player.isOnline()) {
             this.attachment = player.getPlayer().addAttachment(plugin);
         }
@@ -27,7 +32,7 @@ public class PermissionsPlayer implements Player {
 
     protected void registerPermissions() {
 
-        org.bukkit.entity.Player player = Bukkit.getOfflinePlayer(getName()).getPlayer();
+        org.bukkit.entity.Player player = Bukkit.getPlayer(getPlayerId());
         if (attachment == null) {
             attachment = player.getPlayer().addAttachment(plugin);
         }
@@ -43,28 +48,17 @@ public class PermissionsPlayer implements Player {
         attachment.getPermissions().clear();
 
         // add all the main nodes of the groups
-        for (String groupName : plugin.getProvider().getPlayerGroups(getName())) {
+        for (String groupName : plugin.getProvider().getPlayerGroups(getPlayerId())) {
             Group group = plugin.getGroupManager().getGroup(groupName);
             addGroup(group);
         }
     }
 
-    @Override
-    public String getName() {
-
-        return name;
-    }
-
-    @Override
-    public PermissionAttachment getAttachment() {
-
-        return attachment;
-    }
 
     @Override
     public void addGroup(Group group) {
 
-        org.bukkit.entity.Player player = Bukkit.getPlayer(getName());
+        org.bukkit.entity.Player player = Bukkit.getPlayer(getPlayerId());
         if (player == null) {
             return;
         }
@@ -85,7 +79,7 @@ public class PermissionsPlayer implements Player {
     @Override
     public void removeGroup(Group group) {
 
-        org.bukkit.entity.Player player = Bukkit.getPlayer(getName());
+        org.bukkit.entity.Player player = Bukkit.getPlayer(getPlayerId());
         if (player == null) {
             return;
         }

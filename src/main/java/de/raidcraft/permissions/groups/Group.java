@@ -1,6 +1,7 @@
 package de.raidcraft.permissions.groups;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -26,6 +27,7 @@ public interface Group {
      * Gets all permissions that are attached to this group.
      *
      * @param world The name of the world to fetch the permissions for
+     *
      * @return A set of unique permission nodes attached to this group.
      */
     public Set<String> getPermissions(String world);
@@ -69,17 +71,19 @@ public interface Group {
     /**
      * Checks if the player has the global group permission.
      *
-     * @param player to check group for
+     * @param playerId to check group for
+     *
      * @return true if player is in group
      */
-    public boolean isPlayerInGroup(String player);
+    public boolean isPlayerInGroup(UUID playerId);
 
     /**
      * Checks if the player is in this permission group.
      *
-     * @param world to check
-     * @param player to check group for
+     * @param world    to check
+     * @param playerId to check group for
+     *
      * @return true if player is in group
      */
-    public boolean isPlayerInGroup(String world, String player);
+    public boolean isPlayerInGroup(String world, UUID playerId);
 }

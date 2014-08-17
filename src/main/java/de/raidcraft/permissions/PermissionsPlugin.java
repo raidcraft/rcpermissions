@@ -6,6 +6,7 @@ import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -28,14 +29,15 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         registerEvents(new PlayerListener(this));
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().runTaskLater(this, new Runnable() {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             public void run() {
 
                 registerPermissions();
                 updatePermissions();
+                new VaultPerm(PermissionsPlugin.this);
 
             }
-        }, 20L);
+        }, 2 * 20);
     }
 
     @Override
@@ -96,43 +98,50 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // WORLDEDIT PERMISSION PROVIDER METHODS
 
     @Override
+    @Deprecated
+    // TODO: UUID
     public boolean hasPermission(String name, String permission) {
 
         // RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
         Player player = Bukkit.getPlayer(name);
-        if(player == null) return false;
+        if (player == null) return false;
         String[] permParts = permission.split("\\.");
-        if(player.hasPermission(permission)) {
+        if (player.hasPermission(permission)) {
             return true;
-        }
-        else if(permParts.length > 0 && permParts[0] != null) {
+        } else if (permParts.length > 0 && permParts[0] != null) {
             return player.hasPermission(permParts[0] + ".*");
         }
         return false;
     }
 
     @Override
+    @Deprecated
+    // TODO: UUID
     public boolean hasPermission(String worldName, String name, String permission) {
 
         Player player = Bukkit.getPlayer(name);
-        if(player == null) return false;
+        if (player == null) return false;
 
         return hasPermission(name, permission);
     }
 
     @Override
+    @Deprecated
+    // TODO: UUID
     public boolean inGroup(String player, String group) {
 
-        Set<String> groups = provider.getPlayerGroups(player);
-        if(groups == null) return false;
+        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
+        if (groups == null) return false;
         return groups.contains(group);
     }
 
     @Override
+    @Deprecated
+    // TODO: UUID
     public String[] getGroups(String player) {
 
-        Set<String> groups = provider.getPlayerGroups(player);
-        if(groups == null) return new String[]{};
+        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
+        if (groups == null) return new String[]{};
         return groups.toArray(new String[groups.size()]);
     }
 
