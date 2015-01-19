@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.raidcraft</groupId>
         <artifactId>masterpom</artifactId>
-        <version>RELEASE</version>
+        <version>3.4.14-develop-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -20,7 +20,7 @@
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+            <url>http://repo.raid-craft.eu/artifactory/repo/</url>
         </repository>
     </repositories>
 
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>${rc.version}</version>
+            <version>1.4.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
