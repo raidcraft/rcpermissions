@@ -6,21 +6,21 @@
     <version>1.2.3-develop-SNAPSHOT</version>
     <name>RCPermissions</name>
 
-    <parent>
-        <groupId>de.raidcraft</groupId>
-        <artifactId>masterpom</artifactId>
-        <version>RELEASE</version>
-    </parent>
-
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
+    <parent>
+        <groupId>de.raidcraft</groupId>
+        <artifactId>masterpom</artifactId>
+        <version>3.4.14-develop-SNAPSHOT</version>
+    </parent>
+
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://nexus.raid-craft.de/content/groups/public/</url>
+            <url>http://repo.raid-craft.eu/artifactory/repo/</url>
         </repository>
     </repositories>
 
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>${rc.version}</version>
+            <version>1.4.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

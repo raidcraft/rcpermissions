@@ -64,7 +64,7 @@ public class GroupManager {
             // now register all child permissions of the group
             ((SimpleGroup) group).registerPermissions();
             groupList.put(group.getName(), group);
-            plugin.getLogger().info("Permission Group loaded: " + group.getName());
+            plugin.info("Permission Group loaded: " + group.getName(), "groups");
         }
     }
 

@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -101,9 +102,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean hasPermission(String name, String permission) {
-
-        // RaidCraft.LOGGER.info("Permisson '" + permission + "' requested for " + name + "");
-        Player player = Bukkit.getPlayer(name);
+        UUID playerId = UUIDUtil.convertPlayer(name);
+        Player player = Bukkit.getPlayer(playerId);
         if (player == null) return false;
         String[] permParts = permission.split("\\.");
         if (player.hasPermission(permission)) {
@@ -117,12 +117,10 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Override
     @Deprecated
     // TODO: UUID
-    public boolean hasPermission(String worldName, String name, String permission) {
+    public boolean hasPermission(String worldName, String playerName, String permission) {
+        if (playerName == null) return false;
 
-        Player player = Bukkit.getPlayer(name);
-        if (player == null) return false;
-
-        return hasPermission(name, permission);
+        return hasPermission(playerName, permission);
     }
 
     @Override
