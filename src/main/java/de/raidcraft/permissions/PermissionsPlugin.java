@@ -102,6 +102,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean hasPermission(String name, String permission) {
+        // check if name is a NPC #1565
+
         UUID playerId = UUIDUtil.convertPlayer(name);
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) return false;
