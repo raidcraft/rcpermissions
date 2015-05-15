@@ -12,17 +12,17 @@ import java.util.UUID;
  */
 public interface Player {
 
-    public UUID getPlayerId();
+    UUID getPlayerId();
 
-    public PermissionAttachment getAttachment();
+    PermissionAttachment getAttachment();
 
-    public void addGroup(Group group);
+    void addGroup(Group group);
 
-    public Group addGroup(String group);
+    Group addGroup(String group);
 
-    public void removeGroup(Group group);
+    void removeGroup(Group group);
 
-    public Group removeGroup(String group);
+    Group removeGroup(String group);
 
-    public boolean hasPermission(String node);
+    boolean hasPermission(String node);
 }

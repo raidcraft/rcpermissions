@@ -16,10 +16,10 @@ import java.util.UUID;
  */
 public interface RCPermissionsProvider<T extends BasePlugin> {
 
-    public T getPlugin();
+    T getPlugin();
 
     // gets the registered default group that needs to be used
-    public Group getDefaultGroup();
+    Group getDefaultGroup();
 
     /**
      * Gets a list of groups provided by the PermissionsProvider. All underlying
@@ -27,7 +27,7 @@ public interface RCPermissionsProvider<T extends BasePlugin> {
      *
      * @return List of constructed groups that should be made available for all players.
      */
-    public List<Group> getGroups();
+    List<Group> getGroups();
 
     /**
      * Gets a list of all the groups a player belongs to. Needs to return the groups
@@ -36,5 +36,5 @@ public interface RCPermissionsProvider<T extends BasePlugin> {
      * @param player to get the groups for
      * @return Groups of the player
      */
-    public Set<String> getPlayerGroups(UUID player);
+    Set<String> getPlayerGroups(UUID player);
 }
