@@ -1,15 +1,21 @@
 package de.raidcraft.permissions;
 
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.wepif.PermissionsProvider;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import de.raidcraft.util.PastebinPoster;
 import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +33,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Override
     public void enable() {
 
+        registerCommands(DebugCommand.class);
         registerEvents(new PlayerListener(this));
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
@@ -165,5 +172,43 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     public String[] getGroups(OfflinePlayer player) {
 
         return getGroups(player.getName());
+    }
+
+    public static class DebugCommand {
+
+        private final PermissionsPlugin plugin;
+
+        public DebugCommand(PermissionsPlugin plugin) {
+
+            this.plugin = plugin;
+        }
+
+        @Command(
+                aliases = "permissions",
+                desc = "Prints all permissions"
+        )
+        public void debug(CommandContext args, CommandSender sender) {
+
+            StringBuilder sb = new StringBuilder();
+            for (PermissionAttachmentInfo info : sender.getEffectivePermissions()) {
+                sb.append(info.getPermission()).append(": ").append(info.getValue()).append("\n");
+            }
+
+            // lets send it to pastebin
+            sender.sendMessage(ChatColor.YELLOW + "Pasting the debug output to pastebin...");
+            PastebinPoster.paste(sb.toString(), new PastebinPoster.PasteCallback() {
+                @Override
+                public void handleSuccess(String url) {
+
+                    sender.sendMessage(ChatColor.GREEN + "Hero debug was pasted to: " + url);
+                }
+
+                @Override
+                public void handleError(String err) {
+
+                    sender.sendMessage(ChatColor.RED + "Error pasting hero debug output to pastebin!");
+                }
+            });
+        }
     }
 }
