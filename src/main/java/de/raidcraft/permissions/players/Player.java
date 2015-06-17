@@ -16,6 +16,14 @@ public interface Player {
 
     PermissionAttachment getAttachment();
 
+    void addPermission(String permission);
+
+    void addPermission(String world, String permission);
+
+    void removePermission(String permission);
+
+    void removePermission(String world, String permission);
+
     void addGroup(Group group);
 
     Group addGroup(String group);

@@ -2,6 +2,7 @@ package de.raidcraft.permissions.players;
 
 import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
+import de.raidcraft.permissions.groups.SimpleGroup;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,11 +21,15 @@ public class PermissionsPlayer implements Player {
     private final UUID playerId;
     @Getter
     private PermissionAttachment attachment;
+    private final Group playerGroup;
 
     public PermissionsPlayer(PermissionsPlugin plugin, OfflinePlayer player) {
 
         this.plugin = plugin;
         this.playerId = player.getUniqueId();
+        this.playerGroup = new SimpleGroup(plugin, player.getName());
+        plugin.getGroupManager().updateGroupPermissions(playerGroup);
+        addGroup(playerGroup);
         if (player.isOnline()) {
             this.attachment = player.getPlayer().addAttachment(plugin);
         }
@@ -54,6 +59,39 @@ public class PermissionsPlayer implements Player {
         }
     }
 
+    private void recalculatePermissions() {
+
+        org.bukkit.entity.Player player = Bukkit.getPlayer(getPlayerId());
+        if (player != null) player.recalculatePermissions();
+    }
+
+    @Override
+    public void addPermission(String permission) {
+
+        playerGroup.addPermission(permission);
+        recalculatePermissions();
+    }
+
+    @Override
+    public void addPermission(String world, String permission) {
+
+        playerGroup.addPermission(world, permission);
+        recalculatePermissions();
+    }
+
+    @Override
+    public void removePermission(String permission) {
+
+        playerGroup.removePermission(permission);
+        recalculatePermissions();
+    }
+
+    @Override
+    public void removePermission(String world, String permission) {
+
+        playerGroup.removePermission(world, permission);
+        recalculatePermissions();
+    }
 
     @Override
     public void addGroup(Group group) {

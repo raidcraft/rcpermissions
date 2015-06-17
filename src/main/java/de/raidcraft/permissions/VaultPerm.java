@@ -77,7 +77,6 @@ public class VaultPerm extends Permission {
         return plugin.getPlayerManager().hasPermission(player.getUniqueId(), world, permission);
     }
 
-
     @Override
     @Deprecated
     public boolean playerAdd(String s, String s2, String s3) {
@@ -87,7 +86,8 @@ public class VaultPerm extends Permission {
 
     public boolean playerAdd(String world, OfflinePlayer player, String permission) {
 
-        throw new UnsupportedOperationException("You can only add permissions thru groups!");
+        plugin.getPlayerManager().getPlayer(player.getUniqueId()).addPermission(world, permission);
+        return true;
     }
 
     @Override
@@ -100,7 +100,8 @@ public class VaultPerm extends Permission {
     @Override
     public boolean playerRemove(String world, OfflinePlayer player, String permission) {
 
-        throw new UnsupportedOperationException("Only permissions thru groups are supported!");
+        plugin.getPlayerManager().getPlayer(player.getUniqueId()).removePermission(world, permission);
+        return true;
     }
 
     @Override

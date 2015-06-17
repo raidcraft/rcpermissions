@@ -34,38 +34,41 @@ public class GroupManager {
 
     private void load() {
 
-        for (Group group : plugin.getProvider().getGroups()) {
-            // we need to create a permission with the group name for group perm lookups
-            Permission perm = plugin.getServer().getPluginManager().getPermission(group.getGlobalMasterPermission());
-            if (perm == null) {
-                perm = new Permission(group.getGlobalMasterPermission());
-            }
+        plugin.getProvider().getGroups().forEach(this::updateGroupPermissions);
+    }
 
-            perm.setDescription("If true, the attached player is a member of the group: " + group);
-            perm.setDefault(PermissionDefault.FALSE);
-            perm.getChildren().clear();
-            // add the global master group permission
-            if (plugin.getServer().getPluginManager().getPermission(perm.getName()) == null) {
-                plugin.getServer().getPluginManager().addPermission(perm);
-            }
-            // now register a world permission for the group
-            for (World world : Bukkit.getWorlds()) {
-                Permission worldPerm = plugin.getServer().getPluginManager().getPermission(group.getMasterPermission(world.getName()));
-                if (worldPerm == null) {
-                    worldPerm = new Permission(group.getMasterPermission(world.getName()));
-                }
-                worldPerm.setDefault(PermissionDefault.FALSE);
-                worldPerm.getChildren().clear();
-                perm.getChildren().put(worldPerm.getName(), true);
-                if (plugin.getServer().getPluginManager().getPermission(worldPerm.getName()) == null) {
-                    plugin.getServer().getPluginManager().addPermission(worldPerm);
-                }
-            }
-            // now register all child permissions of the group
-            ((SimpleGroup) group).registerPermissions();
-            groupList.put(group.getName(), group);
-            plugin.info("Permission Group loaded: " + group.getName(), "groups");
+    public void updateGroupPermissions(Group group) {
+
+        // we need to create a permission with the group name for group perm lookups
+        Permission perm = plugin.getServer().getPluginManager().getPermission(group.getGlobalMasterPermission());
+        if (perm == null) {
+            perm = new Permission(group.getGlobalMasterPermission());
         }
+
+        perm.setDescription("If true, the attached player is a member of the group: " + group);
+        perm.setDefault(PermissionDefault.FALSE);
+        perm.getChildren().clear();
+        // add the global master group permission
+        if (plugin.getServer().getPluginManager().getPermission(perm.getName()) == null) {
+            plugin.getServer().getPluginManager().addPermission(perm);
+        }
+        // now register a world permission for the group
+        for (World world : Bukkit.getWorlds()) {
+            Permission worldPerm = plugin.getServer().getPluginManager().getPermission(group.getMasterPermission(world.getName()));
+            if (worldPerm == null) {
+                worldPerm = new Permission(group.getMasterPermission(world.getName()));
+            }
+            worldPerm.setDefault(PermissionDefault.FALSE);
+            worldPerm.getChildren().clear();
+            perm.getChildren().put(worldPerm.getName(), true);
+            if (plugin.getServer().getPluginManager().getPermission(worldPerm.getName()) == null) {
+                plugin.getServer().getPluginManager().addPermission(worldPerm);
+            }
+        }
+        // now register all child permissions of the group
+        ((SimpleGroup) group).registerPermissions();
+        groupList.put(group.getName(), group);
+        plugin.info("Permission Group loaded: " + group.getName(), "groups");
     }
 
     public void clean() {

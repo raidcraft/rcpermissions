@@ -9,6 +9,7 @@ import org.bukkit.permissions.Permission;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public class SimpleGroup implements Group {
 
-    private final RCPermissionsProvider provider;
+    private final BasePlugin plugin;
     // the name of this group
     private final String name;
     private final Map<String, Set<String>> worldPermissions;
@@ -29,15 +30,21 @@ public class SimpleGroup implements Group {
 
     public SimpleGroup(RCPermissionsProvider provider, String name, Map<String, Set<String>> permissions, String... globalPermissions) {
 
-        this.provider = provider;
+        this.plugin = provider.getPlugin();
         this.name = name;
         this.worldPermissions = permissions;
         this.globalPermissions = new HashSet<>(Arrays.asList(globalPermissions));
     }
 
-    protected void registerPermissions() {
+    public SimpleGroup(BasePlugin plugin, String name) {
 
-        BasePlugin plugin = provider.getPlugin();
+        this.plugin = plugin;
+        this.name = name;
+        this.worldPermissions = new HashMap<>();
+        this.globalPermissions = new HashSet<>();
+    }
+
+    protected void registerPermissions() {
 
         for (World world : plugin.getServer().getWorlds()) {
 
@@ -103,7 +110,7 @@ public class SimpleGroup implements Group {
     @Override
     public boolean hasPermission(String permission, String world) {
 
-        Permission perm = provider.getPlugin().getServer().getPluginManager().getPermission(getMasterPermission(world));
+        Permission perm = plugin.getServer().getPluginManager().getPermission(getMasterPermission(world));
         if (perm != null && perm.getChildren().containsKey(permission)) {
             return perm.getChildren().get(permission);
         }
@@ -133,7 +140,7 @@ public class SimpleGroup implements Group {
                 return true;
             }
             if (success) {
-                Permission permission = provider.getPlugin().getServer().getPluginManager().getPermission(getMasterPermission(world));
+                Permission permission = plugin.getServer().getPluginManager().getPermission(getMasterPermission(world));
                 permission.getChildren().put(node, true);
                 permission.recalculatePermissibles();
             }
@@ -162,7 +169,7 @@ public class SimpleGroup implements Group {
                 return true;
             }
             if (success) {
-                Permission permission = provider.getPlugin().getServer().getPluginManager().getPermission(getMasterPermission(world));
+                Permission permission = plugin.getServer().getPluginManager().getPermission(getMasterPermission(world));
                 permission.getChildren().remove(node);
                 permission.recalculatePermissibles();
             }
