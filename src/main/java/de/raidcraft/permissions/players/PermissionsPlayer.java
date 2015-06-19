@@ -29,7 +29,6 @@ public class PermissionsPlayer implements Player {
         this.playerId = player.getUniqueId();
         this.playerGroup = new SimpleGroup(plugin, player.getName());
         plugin.getGroupManager().updateGroupPermissions(playerGroup);
-        addGroup(playerGroup);
         if (player.isOnline()) {
             this.attachment = player.getPlayer().addAttachment(plugin);
         }
@@ -57,6 +56,8 @@ public class PermissionsPlayer implements Player {
             Group group = plugin.getGroupManager().getGroup(groupName);
             addGroup(group);
         }
+        // add our player group to the permissions
+        addGroup(playerGroup);
     }
 
     private void recalculatePermissions() {
