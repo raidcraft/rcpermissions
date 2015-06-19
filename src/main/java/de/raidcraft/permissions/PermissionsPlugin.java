@@ -31,22 +31,21 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // managers and handlers
     private PlayerManager playerManager;
     private GroupManager groupManager;
+    private VaultPerm vaultPerm;
 
     @Override
     public void enable() {
 
         registerCommands(DebugCommand.class);
         registerEvents(new PlayerListener(this));
+        vaultPerm = new VaultPerm(PermissionsPlugin.this);
+        setupPermissions();
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            public void run() {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
 
-                registerPermissions();
-                updatePermissions();
-                new VaultPerm(PermissionsPlugin.this);
-
-            }
+            registerPermissions();
+            updatePermissions();
         }, 2 * 20);
     }
 
