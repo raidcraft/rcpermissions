@@ -17,8 +17,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -189,14 +191,15 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         )
         public void debug(CommandContext args, CommandSender sender) {
 
-            StringBuilder sb = new StringBuilder();
-            for (PermissionAttachmentInfo info : sender.getEffectivePermissions()) {
-                sb.append(info.getPermission()).append(": ").append(info.getValue()).append("\n");
-            }
+            List<String> permissions = sender.getEffectivePermissions().stream()
+                    .map(PermissionAttachmentInfo::getPermission)
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
 
             // lets send it to pastebin
             sender.sendMessage(ChatColor.YELLOW + "Pasting the debug output to pastebin...");
-            PastebinPoster.paste(sb.toString(), new PastebinPoster.PasteCallback() {
+            PastebinPoster.paste(permissions.stream().collect(Collectors.joining("\n")), new PastebinPoster.PasteCallback() {
                 @Override
                 public void handleSuccess(String url) {
 
