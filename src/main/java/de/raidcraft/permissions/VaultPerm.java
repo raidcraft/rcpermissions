@@ -11,6 +11,7 @@ import org.bukkit.plugin.ServicePriority;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Dragonfire
@@ -79,9 +80,10 @@ public class VaultPerm extends Permission {
 
     @Override
     @Deprecated
-    public boolean playerAdd(String s, String s2, String s3) {
+    public boolean playerAdd(String world, String player, String permission) {
 
-        throw new UnsupportedOperationException("You can only add permissions thru groups!");
+        plugin.getPlayerManager().getPlayer(UUID.fromString(player)).addPermission(world, permission);
+        return true;
     }
 
     public boolean playerAdd(String world, OfflinePlayer player, String permission) {
@@ -92,9 +94,10 @@ public class VaultPerm extends Permission {
 
     @Override
     @Deprecated
-    public boolean playerRemove(String s, String s2, String s3) {
+    public boolean playerRemove(String world, String player, String permission) {
 
-        throw new UnsupportedOperationException("Only permissions thru groups are supported!");
+        plugin.getPlayerManager().getPlayer(UUID.fromString(player)).removePermission(world, permission);
+        return true;
     }
 
     @Override
