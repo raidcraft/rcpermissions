@@ -35,12 +35,9 @@ public class VaultPerm extends Permission {
     private void hookIntoVault(Vault vault) {
 
         try {
-            Bukkit.getServicesManager().register(Permission.class,
-                    this, vault, ServicePriority.Normal);
-            net.milkbowl.vault.economy.Economy testEco = Bukkit.getServer().getServicesManager()
-                    .getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
-            plugin.getLogger().info(plugin.getName() + " hooked into Vault, enabled: "
-                    + testEco.isEnabled());
+            Bukkit.getServicesManager().register(Permission.class, this, vault, ServicePriority.Normal);
+            Permission testPerm = Bukkit.getServer().getServicesManager().getRegistration(Permission.class).getProvider();
+            plugin.getLogger().info(plugin.getName() + " hooked into Vault, enabled: " + testPerm.isEnabled());
         } catch (Exception e) {
             plugin.getLogger().warning("cannot inject Vault - incompatible version?");
             e.printStackTrace();
