@@ -25,6 +25,10 @@ public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin>
 
     public DatabaseProvder(PermissionsPlugin plugin) {
         this.plugin = plugin;
+        reload();
+    }
+
+    public void reload() {
         loadGroups();
     }
 

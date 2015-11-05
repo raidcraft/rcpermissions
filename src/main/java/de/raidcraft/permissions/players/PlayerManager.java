@@ -52,10 +52,8 @@ public class PlayerManager {
     }
 
     public void reload() {
-
-        for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-            register(p);
-        }
+        disable();
+        Bukkit.getOnlinePlayers().forEach(this::register);
     }
 
     public void unregister(UUID playerId) {
