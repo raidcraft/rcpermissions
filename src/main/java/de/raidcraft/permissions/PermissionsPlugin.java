@@ -7,7 +7,10 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
+import de.raidcraft.permissions.provider.DatabaseProvder;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import de.raidcraft.permissions.tables.TPermission;
+import de.raidcraft.permissions.tables.TPermissionGroupMember;
 import de.raidcraft.util.PastebinPoster;
 import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Bukkit;
@@ -17,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -40,6 +44,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         registerEvents(new PlayerListener(this));
         vaultPerm = new VaultPerm(PermissionsPlugin.this);
         setupPermissions();
+        provider = new DatabaseProvder(this);
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
@@ -212,5 +217,14 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
                 }
             });
         }
+    }
+
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+
+        List<Class<?>> tables = new ArrayList<>();
+        tables.add(TPermission.class);
+        tables.add(TPermissionGroupMember.class);
+        return tables;
     }
 }

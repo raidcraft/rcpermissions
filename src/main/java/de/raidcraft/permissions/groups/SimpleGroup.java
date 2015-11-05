@@ -7,14 +7,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -28,12 +21,24 @@ public class SimpleGroup implements Group {
     private final Map<String, Set<String>> worldPermissions;
     private final Set<String> globalPermissions;
 
-    public SimpleGroup(RCPermissionsProvider provider, String name, Map<String, Set<String>> permissions, String... globalPermissions) {
+    public SimpleGroup(RCPermissionsProvider provider,
+                       String name,
+                       Map<String,
+                       Set<String>> permissions,
+                       String... globalPermissions) {
+
+        this(provider, name, permissions, new HashSet<>(Arrays.asList(globalPermissions)));
+    }
+
+    public SimpleGroup(RCPermissionsProvider provider,
+                       String name, Map<String,
+                       Set<String>> permissions,
+                       Set<String> globalPermissions) {
 
         this.plugin = provider.getPlugin();
         this.name = name;
         this.worldPermissions = permissions;
-        this.globalPermissions = new HashSet<>(Arrays.asList(globalPermissions));
+        this.globalPermissions = globalPermissions;
     }
 
     public SimpleGroup(BasePlugin plugin, String name) {
