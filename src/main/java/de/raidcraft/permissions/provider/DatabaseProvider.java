@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * @author Dragonfire
  */
-public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin> {
+public class DatabaseProvider implements RCPermissionsProvider<PermissionsPlugin> {
 
     @Getter
     private final PermissionsPlugin plugin;
@@ -23,7 +23,7 @@ public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin>
     @Getter
     private Group defaultGroup;
 
-    public DatabaseProvder(PermissionsPlugin plugin) {
+    public DatabaseProvider(PermissionsPlugin plugin) {
         this.plugin = plugin;
         reload();
     }

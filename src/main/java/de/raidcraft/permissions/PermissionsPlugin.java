@@ -6,7 +6,7 @@ import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
-import de.raidcraft.permissions.provider.DatabaseProvder;
+import de.raidcraft.permissions.provider.DatabaseProvider;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import de.raidcraft.permissions.provider.VaultPerm;
 import de.raidcraft.permissions.tables.TPermission;
@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
 
-    private DatabaseProvder provider;
+    private DatabaseProvider provider;
     @Getter
     private PlayerManager playerManager;
     @Getter
@@ -39,7 +39,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         registerEvents(new PlayerListener(this));
         new VaultPerm(PermissionsPlugin.this);
         setupPermissions();
-        provider = new DatabaseProvder(this);
+        provider = new DatabaseProvider(this);
         playerManager = new PlayerManager(this);
         groupManager = new GroupManager(this);
     }
