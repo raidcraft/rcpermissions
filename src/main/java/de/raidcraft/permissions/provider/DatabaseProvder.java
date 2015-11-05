@@ -33,15 +33,15 @@ public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin>
         List<SqlRow> rows = plugin.getDatabase().createSqlQuery(sql).findList();
         rows.stream().forEach(row -> loadGroup(row.getString("group_")));
         // try to find default group
-        for(Group group : groups) {
-            if(group.getName().equals("default")) {
+        for (Group group : groups) {
+            if (group.getName().equals("default")) {
                 defaultGroup = group;
                 break;
             }
         }
     }
 
-    private void loadGroup(String name){
+    private void loadGroup(String name) {
         Map<String, Set<String>> sortedPerms = new HashMap<>();
         Set<String> globalPerm = new HashSet<>();
         List<TPermission> perms = plugin.getDatabase()
@@ -49,12 +49,12 @@ public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin>
                 .where()
                 .eq("group_", name)
                 .findList();
-        for(TPermission perm : perms) {
-            if(perm.getWorld() == null) {
+        for (TPermission perm : perms) {
+            if (perm.getWorld() == null) {
                 globalPerm.add(perm.getPermission());
             } else {
                 String world = perm.getWorld();
-                if(!sortedPerms.containsKey(world)) {
+                if (!sortedPerms.containsKey(world)) {
                     sortedPerms.put(world, new HashSet<>());
                 }
                 sortedPerms.get(world).add(perm.getPermission());
@@ -66,10 +66,16 @@ public class DatabaseProvder implements RCPermissionsProvider<PermissionsPlugin>
 
     @Override
     public Set<String> getPlayerGroups(UUID player) {
-        return plugin.getDatabase().find(TPermissionGroupMember.class)
-                .where().eq("player", player.toString()).findList()
+        Set<String> playerGroups = plugin.getDatabase().find(TPermissionGroupMember.class)
+                .where()
+                .eq("player", player.toString())
+                .findList()
                 .stream()
                 .map(TPermissionGroupMember::getGroup)
                 .collect(Collectors.toSet());
+        if (this.defaultGroup != null) {
+            playerGroups.add(this.defaultGroup.getName());
+        }
+        return playerGroups;
     }
 }
