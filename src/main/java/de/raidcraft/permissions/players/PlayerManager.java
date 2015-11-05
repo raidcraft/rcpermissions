@@ -21,6 +21,7 @@ public class PlayerManager {
     public PlayerManager(PermissionsPlugin plugin) {
 
         this.plugin = plugin;
+        reload();
     }
 
     public boolean register(UUID playerId) {
