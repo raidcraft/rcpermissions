@@ -32,26 +32,18 @@ import java.util.stream.Collectors;
 public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
 
     private RCPermissionsProvider<? extends BasePlugin> provider;
-    // managers and handlers
     private PlayerManager playerManager;
     private GroupManager groupManager;
-    private VaultPerm vaultPerm;
 
     @Override
     public void enable() {
-
         registerCommands(DebugCommand.class);
         registerEvents(new PlayerListener(this));
-        vaultPerm = new VaultPerm(PermissionsPlugin.this);
+        new VaultPerm(PermissionsPlugin.this);
         setupPermissions();
         provider = new DatabaseProvder(this);
-
-        // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
-
-            registerPermissions();
-            updatePermissions();
-        }, 2 * 20);
+        registerPermissions();
+        updatePermissions();
     }
 
     @Override
@@ -158,13 +150,11 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
 
     @Override
     public boolean hasPermission(OfflinePlayer player, String permission) {
-
         return hasPermission(player.getName(), permission);
     }
 
     @Override
     public boolean hasPermission(String worldName, OfflinePlayer player, String permission) {
-
         return hasPermission(worldName, player.getName(), permission);
     }
 
