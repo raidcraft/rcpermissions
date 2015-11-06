@@ -2,6 +2,9 @@ package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsProvider;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.config.Comment;
+import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.Setting;
 import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
@@ -27,6 +30,8 @@ import java.util.UUID;
  */
 public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
 
+    @Getter
+    private LocalConfiguration config;
     private DatabaseProvider provider;
     @Getter
     private PlayerManager playerManager;
@@ -35,6 +40,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
 
     @Override
     public void enable() {
+        this.config = configure(new LocalConfiguration(this));
         registerCommands(AdminCommands.class);
         registerEvents(new PlayerListener(this));
         new VaultPerm(PermissionsPlugin.this);
@@ -69,6 +75,17 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         tables.add(TPermission.class);
         tables.add(TPermissionGroupMember.class);
         return tables;
+    }
+
+
+    public class LocalConfiguration extends ConfigurationBase<PermissionsPlugin> {
+        public LocalConfiguration(PermissionsPlugin plugin) {
+            super(plugin, "config.yml");
+        }
+
+        @Comment("Permission Group every player has by default")
+        @Setting("default.group")
+        public String defaultGroup = "default";
     }
 
     // #############################################################

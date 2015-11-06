@@ -38,7 +38,7 @@ public class DatabaseProvider implements RCPermissionsProvider<PermissionsPlugin
         rows.stream().forEach(row -> loadGroup(row.getString("group_")));
         // try to find default group
         for (Group group : groups) {
-            if (group.getName().equals("default")) {
+            if (group.getName().equals(plugin.getConfig().defaultGroup)) {
                 defaultGroup = group;
                 break;
             }
