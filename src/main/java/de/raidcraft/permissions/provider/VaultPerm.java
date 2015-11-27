@@ -1,5 +1,6 @@
-package de.raidcraft.permissions;
+package de.raidcraft.permissions.provider;
 
+import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.util.UUIDUtil;
 import net.milkbowl.vault.Vault;

@@ -30,6 +30,7 @@ public class GroupManager {
         if (defaultGroup != null) {
             this.DEFAULT = defaultGroup.getName();
         }
+        reload();
     }
 
     private void load() {

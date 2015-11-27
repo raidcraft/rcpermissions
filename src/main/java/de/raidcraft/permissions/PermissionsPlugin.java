@@ -1,80 +1,61 @@
 package de.raidcraft.permissions;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.wepif.PermissionsProvider;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
+import de.raidcraft.permissions.provider.DatabaseProvider;
 import de.raidcraft.permissions.provider.RCPermissionsProvider;
-import de.raidcraft.util.PastebinPoster;
+import de.raidcraft.permissions.provider.VaultPerm;
+import de.raidcraft.permissions.tables.TPermission;
+import de.raidcraft.permissions.tables.TPermissionGroupMember;
 import de.raidcraft.util.UUIDUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Silthus
  */
 public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
 
-    private RCPermissionsProvider<? extends BasePlugin> provider;
-    // managers and handlers
+    private DatabaseProvider provider;
+    @Getter
     private PlayerManager playerManager;
+    @Getter
     private GroupManager groupManager;
-    private VaultPerm vaultPerm;
 
     @Override
     public void enable() {
-
-        registerCommands(DebugCommand.class);
+        registerCommands(AdminCommands.class);
         registerEvents(new PlayerListener(this));
-        vaultPerm = new VaultPerm(PermissionsPlugin.this);
+        new VaultPerm(PermissionsPlugin.this);
         setupPermissions();
-
-        // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
-
-            registerPermissions();
-            updatePermissions();
-        }, 2 * 20);
+        provider = new DatabaseProvider(this);
+        playerManager = new PlayerManager(this);
+        groupManager = new GroupManager(this);
     }
 
     @Override
     public void disable() {
-
         playerManager.disable();
     }
 
     public void reload() {
-
-        playerManager.disable();
-        groupManager.clean();
-        registerPermissions();
-        updatePermissions();
-    }
-
-    public <T extends BasePlugin> void registerProvider(RCPermissionsProvider<T> provider) {
-
-        if (this.provider != null) {
-            getLogger().severe(provider.getPlugin().getName() + " tried to register as Permission Provider when "
-                    + this.provider.getPlugin().getName() + " already registered!");
-        } else {
-            this.provider = provider;
-        }
+        provider.reload();
+        groupManager.reload();
+        playerManager.reload();
     }
 
     public RCPermissionsProvider<? extends BasePlugin> getProvider() {
-
         if (provider == null) {
             getLogger().severe("No provider was registered! Shutting down the server to be save...");
             getServer().shutdown();
@@ -82,29 +63,17 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         return provider;
     }
 
-    private void registerPermissions() {
-
-        playerManager = new PlayerManager(this);
-        groupManager = new GroupManager(this);
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+        List<Class<?>> tables = new ArrayList<>();
+        tables.add(TPermission.class);
+        tables.add(TPermissionGroupMember.class);
+        return tables;
     }
 
-    private void updatePermissions() {
-
-        groupManager.reload();
-        playerManager.reload();
-    }
-
-    public PlayerManager getPlayerManager() {
-
-        return this.playerManager;
-    }
-
-    public GroupManager getGroupManager() {
-
-        return this.groupManager;
-    }
-
-    // WORLDEDIT PERMISSION PROVIDER METHODS
+    // #############################################################
+    // WorldEdit Permissions Interoperability Framework
+    // http://wiki.sk89q.com/wiki/WEPIF
 
     @Override
     @Deprecated
@@ -112,7 +81,9 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     public boolean hasPermission(String name, String permission) {
         UUID playerId = UUIDUtil.convertPlayer(name);
         Player player = Bukkit.getPlayer(playerId);
-        if (player == null) return false;
+        if (player == null) {
+            return false;
+        }
         String[] permParts = permission.split("\\.");
         if (player.hasPermission(permission)) {
             return true;
@@ -126,8 +97,9 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean hasPermission(String worldName, String playerName, String permission) {
-        if (playerName == null) return false;
-
+        if (playerName == null) {
+            return false;
+        }
         return hasPermission(playerName, permission);
     }
 
@@ -135,9 +107,10 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean inGroup(String player, String group) {
-
         Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
-        if (groups == null) return false;
+        if (groups == null) {
+            return false;
+        }
         return groups.contains(group);
     }
 
@@ -145,72 +118,32 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public String[] getGroups(String player) {
-
         Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
-        if (groups == null) return new String[]{};
+        if (groups == null) {
+            return new String[]{};
+        }
         return groups.toArray(new String[groups.size()]);
     }
 
     @Override
     public boolean hasPermission(OfflinePlayer player, String permission) {
-
         return hasPermission(player.getName(), permission);
     }
 
     @Override
     public boolean hasPermission(String worldName, OfflinePlayer player, String permission) {
-
         return hasPermission(worldName, player.getName(), permission);
     }
 
     @Override
     public boolean inGroup(OfflinePlayer player, String group) {
-
         return inGroup(player.getName(), group);
     }
 
     @Override
     public String[] getGroups(OfflinePlayer player) {
-
         return getGroups(player.getName());
     }
 
-    public static class DebugCommand {
-
-        private final PermissionsPlugin plugin;
-
-        public DebugCommand(PermissionsPlugin plugin) {
-
-            this.plugin = plugin;
-        }
-
-        @Command(
-                aliases = "permissions",
-                desc = "Prints all permissions"
-        )
-        public void debug(CommandContext args, CommandSender sender) {
-
-            List<String> permissions = sender.getEffectivePermissions().stream()
-                    .map(PermissionAttachmentInfo::getPermission)
-                    .distinct()
-                    .sorted()
-                    .collect(Collectors.toList());
-
-            // lets send it to pastebin
-            sender.sendMessage(ChatColor.YELLOW + "Pasting the debug output to pastebin...");
-            PastebinPoster.paste(permissions.stream().collect(Collectors.joining("\n")), new PastebinPoster.PasteCallback() {
-                @Override
-                public void handleSuccess(String url) {
-
-                    sender.sendMessage(ChatColor.GREEN + "Hero debug was pasted to: " + url);
-                }
-
-                @Override
-                public void handleError(String err) {
-
-                    sender.sendMessage(ChatColor.RED + "Error pasting hero debug output to pastebin!");
-                }
-            });
-        }
-    }
+    // #############################################################
 }
