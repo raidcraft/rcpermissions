@@ -7,8 +7,7 @@
     <name>RCPermissions</name>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
-        <tag>HEAD</tag>
+        <developerConnection>scm:git:ssh://git@git.raid-craft.de:2222/raid-craft-de/permissions.git</developerConnection>
     </scm>
 
     <parent>
@@ -20,7 +19,7 @@
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://repo.raid-craft.eu/artifactory/repo/</url>
+            <url>http://repo.raid-craft.de/artifactory/repo/</url>
         </repository>
     </repositories>
 
