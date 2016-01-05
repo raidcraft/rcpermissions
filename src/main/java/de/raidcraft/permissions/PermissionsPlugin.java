@@ -88,7 +88,17 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
         if (player.hasPermission(permission)) {
             return true;
         } else if (permParts.length > 0 && permParts[0] != null) {
-            return player.hasPermission(permParts[0] + ".*");
+            String starPerm = "";
+            int i = 1;
+            for(String part : permParts) {
+                i++;
+                starPerm += part + ".";
+                if(i == permParts.length) {
+                    starPerm += "*";
+                    break;
+                }
+            }
+            return player.hasPermission(starPerm);
         }
         return false;
     }
