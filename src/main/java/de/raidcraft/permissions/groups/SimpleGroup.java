@@ -146,7 +146,11 @@ public class SimpleGroup implements Group {
             }
             if (success) {
                 Permission permission = plugin.getServer().getPluginManager().getPermission(getMasterPermission(world));
-                permission.getChildren().put(node, true);
+                if (node.startsWith("-")) {
+                    permission.getChildren().put(node.substring(1), false);
+                } else {
+                    permission.getChildren().put(node, true);
+                }
                 permission.recalculatePermissibles();
             }
             return success;
