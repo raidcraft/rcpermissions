@@ -15,6 +15,7 @@ import de.raidcraft.permissions.tables.TPermissionGroupMember;
 import de.raidcraft.util.UUIDUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -119,7 +120,6 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // TODO: UUID
     public boolean inGroup(String player, String group) {
 
-        RaidCraft.LOGGER.info("[RCPERM] inGroup: Player: " + player + " Group: " + group);
         return hasPermission(player, "group." + group.toLowerCase());
     }
 
