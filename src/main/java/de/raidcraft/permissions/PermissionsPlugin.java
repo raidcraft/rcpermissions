@@ -1,6 +1,7 @@
 package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsProvider;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
@@ -118,7 +119,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     // TODO: UUID
     public boolean inGroup(String player, String group) {
 
-        return hasPermission(Bukkit.getOfflinePlayer(UUIDUtil.getUUIDStringFromName(player)), "group." + group);
+        RaidCraft.LOGGER.info("[RCPERM] inGroup: Player: " + player + " Group: " + group);
+        return hasPermission(player, "group." + group.toLowerCase());
     }
 
     @Override

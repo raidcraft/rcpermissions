@@ -111,7 +111,7 @@ public class PermissionsPlayer implements Player {
     public Group addGroup(String group) {
 
         Group g = plugin.getGroupManager().getGroup(group);
-        if(g.getGlobalMasterPermission().equalsIgnoreCase(plugin.getGroupManager().getDefaultGroup().getName())) {
+        if(g.getName().equalsIgnoreCase(plugin.getGroupManager().getDefaultGroup().getName())) {
             // Create dummy group
             g = new SimpleGroup(plugin, group);
         }
@@ -136,7 +136,7 @@ public class PermissionsPlayer implements Player {
     public Group removeGroup(String group) {
 
         Group g = plugin.getGroupManager().getGroup(group);
-        if(g.getGlobalMasterPermission().equalsIgnoreCase(plugin.getGroupManager().getDefaultGroup().getName())) {
+        if(g.getName().equalsIgnoreCase(plugin.getGroupManager().getDefaultGroup().getName())) {
             // Create dummy group
             g = new SimpleGroup(plugin, group);
         }
