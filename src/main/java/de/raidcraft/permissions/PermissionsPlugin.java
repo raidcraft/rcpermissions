@@ -117,11 +117,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean inGroup(String player, String group) {
-        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
-        if (groups == null) {
-            return false;
-        }
-        return groups.contains(group);
+
+        return hasPermission(Bukkit.getOfflinePlayer(UUIDUtil.getUUIDStringFromName(player)), "group." + group);
     }
 
     @Override
