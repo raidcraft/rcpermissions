@@ -136,22 +136,22 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
 
     @Override
     public boolean hasPermission(OfflinePlayer player, String permission) {
-        return hasPermission(player.getName(), permission);
+        return hasPermission(UUIDUtil.getNameFromUUID(player.getUniqueId()), permission);
     }
 
     @Override
     public boolean hasPermission(String worldName, OfflinePlayer player, String permission) {
-        return hasPermission(worldName, player.getName(), permission);
+        return hasPermission(worldName, UUIDUtil.getNameFromUUID(player.getUniqueId()), permission);
     }
 
     @Override
     public boolean inGroup(OfflinePlayer player, String group) {
-        return inGroup(player.getName(), group);
+        return inGroup(UUIDUtil.getNameFromUUID(player.getUniqueId()), group);
     }
 
     @Override
     public String[] getGroups(OfflinePlayer player) {
-        return getGroups(player.getName());
+        return getGroups(UUIDUtil.getNameFromUUID(player.getUniqueId()));
     }
 
     // #############################################################
