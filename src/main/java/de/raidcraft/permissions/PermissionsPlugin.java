@@ -81,6 +81,9 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Deprecated
     // TODO: UUID
     public boolean hasPermission(String name, String permission) {
+
+        RaidCraft.LOGGER.info("[RCPERM] hasPerm.: " + name + " | " + permission);
+
         UUID playerId = UUIDUtil.convertPlayer(name);
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) {
