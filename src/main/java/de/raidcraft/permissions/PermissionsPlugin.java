@@ -1,6 +1,7 @@
 package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsProvider;
+import com.sk89q.wepif.PermissionsResolver;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.permissions.commands.AdminCommands;
@@ -27,7 +28,7 @@ import java.util.UUID;
 /**
  * @author Silthus
  */
-public class PermissionsPlugin extends BasePlugin implements PermissionsProvider {
+public class PermissionsPlugin extends BasePlugin implements PermissionsResolver {
 
     private DatabaseProvider provider;
     @Getter
@@ -155,6 +156,16 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsProvider
     @Override
     public String[] getGroups(OfflinePlayer player) {
         return getGroups(UUIDUtil.getNameFromUUID(player.getUniqueId()));
+    }
+
+    @Override
+    public void load() {
+
+    }
+
+    @Override
+    public String getDetectionMessage() {
+        return "Using Raid-Craft Permissions API";
     }
 
     // #############################################################
