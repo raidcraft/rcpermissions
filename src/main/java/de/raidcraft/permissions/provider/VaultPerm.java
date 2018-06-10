@@ -3,7 +3,6 @@ package de.raidcraft.permissions.provider;
 import de.raidcraft.permissions.PermissionsPlugin;
 import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.util.UUIDUtil;
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -30,10 +29,10 @@ public class VaultPerm extends Permission {
             plugin.getLogger().severe("Vault not found - cannot inject");
             return;
         }
-        hookIntoVault((Vault) vPlugin);
+        hookIntoVault(vPlugin);
     }
 
-    private void hookIntoVault(Vault vault) {
+    private void hookIntoVault(Plugin vault) {
 
         try {
             Bukkit.getServicesManager().register(Permission.class, this, vault, ServicePriority.Normal);
