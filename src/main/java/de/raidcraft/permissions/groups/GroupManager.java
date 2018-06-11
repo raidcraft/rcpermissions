@@ -1,16 +1,15 @@
 package de.raidcraft.permissions.groups;
 
+import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.permissions.PermissionsPlugin;
+import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A group manager that handles the creation and removal of group permissions in Privileges
@@ -26,16 +25,21 @@ public class GroupManager {
     public GroupManager(PermissionsPlugin plugin) {
 
         this.plugin = plugin;
-        Group defaultGroup = plugin.getProvider().getDefaultGroup();
+    }
+
+    private void load() throws RaidCraftException {
+
+        RCPermissionsProvider<? extends BasePlugin> permissionsProvider = plugin.getProvider();
+
+        if (permissionsProvider == null) {
+            throw new RaidCraftException("Failed to load Permissions plugin! Permission Provider is NULL!");
+        }
+
+        permissionsProvider.getGroups().forEach(this::updateGroupPermissions);
+        Group defaultGroup = permissionsProvider.getDefaultGroup();
         if (defaultGroup != null) {
             this.DEFAULT = defaultGroup.getName();
         }
-        reload();
-    }
-
-    private void load() {
-
-        plugin.getProvider().getGroups().forEach(this::updateGroupPermissions);
     }
 
     public void updateGroupPermissions(Group group) {
@@ -77,7 +81,7 @@ public class GroupManager {
         groupList.clear();
     }
 
-    public void reload() {
+    public void reload() throws RaidCraftException {
 
         clean();
         load();

@@ -2,6 +2,7 @@ package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsResolver;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.RaidCraftException;
 import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
@@ -54,8 +55,12 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
     }
 
     public void reload() {
-        groupManager.reload();
-        playerManager.reload();
+        try {
+            groupManager.reload();
+            playerManager.reload();
+        } catch (RaidCraftException e) {
+            e.printStackTrace();
+        }
     }
 
     public <T extends BasePlugin> void registerProvider(RCPermissionsProvider<T> provider) {
@@ -85,8 +90,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
 
     private void updatePermissions() {
 
-        groupManager.reload();
-        playerManager.reload();
+        this.reload();
     }
 
 
