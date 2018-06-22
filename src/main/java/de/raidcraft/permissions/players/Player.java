@@ -1,6 +1,6 @@
 package de.raidcraft.permissions.players;
 
-import de.raidcraft.permissions.groups.Group;
+import de.raidcraft.api.permissions.Group;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.UUID;

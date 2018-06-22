@@ -1,8 +1,9 @@
 package de.raidcraft.permissions.provider;
 
 import com.avaje.ebean.SqlRow;
+import de.raidcraft.api.permissions.Group;
+import de.raidcraft.api.permissions.RCPermissionsProvider;
 import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.permissions.groups.SimpleGroup;
 import de.raidcraft.permissions.tables.TPermission;
 import de.raidcraft.permissions.tables.TPermissionGroupMember;

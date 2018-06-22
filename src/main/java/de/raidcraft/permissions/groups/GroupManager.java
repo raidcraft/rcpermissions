@@ -2,8 +2,9 @@ package de.raidcraft.permissions.groups;
 
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.RaidCraftException;
+import de.raidcraft.api.permissions.Group;
+import de.raidcraft.api.permissions.RCPermissionsProvider;
 import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.permissions.Permission;
@@ -16,7 +17,7 @@ import java.util.*;
  *
  * @author Silthus
  */
-public class GroupManager {
+public class GroupManager implements de.raidcraft.api.permissions.GroupManager {
 
     private PermissionsPlugin plugin;
     private String DEFAULT;
@@ -42,6 +43,16 @@ public class GroupManager {
         }
     }
 
+    @Override
+    public Group createGroup(RCPermissionsProvider provider,
+                             String name,
+                             Map<String,
+                                     Set<String>> permissions,
+                             String... globalPermissions) {
+        return new SimpleGroup(provider, name, permissions, globalPermissions);
+    }
+
+    @Override
     public void updateGroupPermissions(Group group) {
 
         // we need to create a permission with the group name for group perm lookups
@@ -76,17 +87,20 @@ public class GroupManager {
         plugin.info("Permission Group loaded: " + group.getName(), "groups");
     }
 
+    @Override
     public void clean() {
 
         groupList.clear();
     }
 
+    @Override
     public void reload() throws RaidCraftException {
 
         clean();
         load();
     }
 
+    @Override
     public Group getDefaultGroup() {
 
         Group group = groupList.get(DEFAULT);
@@ -104,6 +118,7 @@ public class GroupManager {
      *
      * @return The new group for the player
      */
+    @Override
     public Group addPlayerToGroup(UUID playerId, String group) {
 
         return plugin.getPlayerManager().getPlayer(playerId).addGroup(group);
@@ -117,6 +132,7 @@ public class GroupManager {
      *
      * @return The old group of the player
      */
+    @Override
     public Group removePlayerFromGroup(UUID playerId, String group) {
 
         return plugin.getPlayerManager().getPlayer(playerId).removeGroup(group);
@@ -130,6 +146,7 @@ public class GroupManager {
      * @param group to check for
      * @return true if player is in group
      */
+    @Override
     public boolean isPlayerInGroup(String world, UUID playerId, String group) {
 
         return getGroup(group).isPlayerInGroup(world, playerId);
@@ -142,6 +159,7 @@ public class GroupManager {
      * @param group to check for
      * @return true if player is in group
      */
+    @Override
     public boolean isPlayerInGroup(UUID playerId, String group) {
 
         return getGroup(group).isPlayerInGroup(playerId);
@@ -154,6 +172,7 @@ public class GroupManager {
      *
      * @return the group instance, or null
      */
+    @Override
     public Group getGroup(String group) {
 
         if (!groupList.containsKey(group)) {
@@ -168,6 +187,7 @@ public class GroupManager {
      *
      * @return The current groups, as a Set
      */
+    @Override
     public Set<Group> getGroups() {
 
         return new HashSet<>(groupList.values());

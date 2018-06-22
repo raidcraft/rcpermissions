@@ -4,3 +4,4 @@ version: ${project.version}#${build.number}
 author: Silthus
 website: www.raid-craft.de
 depend: [RaidCraft-API, Vault]
+softdepend: [RCSkills]

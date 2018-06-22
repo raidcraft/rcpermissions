@@ -1,7 +1,7 @@
 package de.raidcraft.permissions.players;
 
+import de.raidcraft.api.permissions.Group;
 import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.permissions.groups.SimpleGroup;
 import lombok.Getter;
 import org.bukkit.Bukkit;

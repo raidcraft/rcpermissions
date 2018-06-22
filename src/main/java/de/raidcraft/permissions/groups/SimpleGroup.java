@@ -1,7 +1,8 @@
 package de.raidcraft.permissions.groups;
 
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.permissions.provider.RCPermissionsProvider;
+import de.raidcraft.api.permissions.Group;
+import de.raidcraft.api.permissions.RCPermissionsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

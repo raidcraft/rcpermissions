@@ -1,13 +1,14 @@
 package de.raidcraft.permissions;
 
 import com.sk89q.wepif.PermissionsResolver;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.RaidCraftException;
+import de.raidcraft.api.permissions.RCPermissionsProvider;
 import de.raidcraft.permissions.commands.AdminCommands;
 import de.raidcraft.permissions.groups.GroupManager;
 import de.raidcraft.permissions.listeners.PlayerListener;
 import de.raidcraft.permissions.players.PlayerManager;
-import de.raidcraft.permissions.provider.RCPermissionsProvider;
 import de.raidcraft.permissions.provider.VaultPerm;
 import de.raidcraft.permissions.tables.TPermission;
 import de.raidcraft.permissions.tables.TPermissionGroupMember;
@@ -27,7 +28,6 @@ import java.util.UUID;
  */
 public class PermissionsPlugin extends BasePlugin implements PermissionsResolver {
 
-    private RCPermissionsProvider<? extends BasePlugin> provider;
     @Getter
     private PlayerManager playerManager;
     @Getter
@@ -40,6 +40,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
         new VaultPerm(PermissionsPlugin.this);
         playerManager = new PlayerManager(this);
         groupManager = new GroupManager(this);
+        RaidCraft.setPermissionGroupManager(groupManager);
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
@@ -63,18 +64,8 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
         }
     }
 
-    public <T extends BasePlugin> void registerProvider(RCPermissionsProvider<T> provider) {
-
-        if (this.provider != null) {
-            getLogger().severe(provider.getPlugin().getName() + " tried to register as Permission Provider when "
-                    + this.provider.getPlugin().getName() + " already registered!");
-        } else {
-            this.provider = provider;
-        }
-    }
-
-
     public RCPermissionsProvider<? extends BasePlugin> getProvider() {
+        RCPermissionsProvider provider = RaidCraft.getPermissionsProvider();
         if (provider == null) {
             getLogger().severe("No provider was registered! Shutting down the server to be save...");
             getServer().shutdown();
@@ -159,7 +150,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
     @Deprecated
     // TODO: UUID
     public String[] getGroups(String player) {
-        Set<String> groups = provider.getPlayerGroups(UUIDUtil.convertPlayer(player));
+        Set<String> groups = getProvider().getPlayerGroups(UUIDUtil.convertPlayer(player));
         if (groups == null) {
             return new String[]{};
         }

@@ -1,7 +1,7 @@
 package de.raidcraft.permissions.provider;
 
+import de.raidcraft.api.permissions.Group;
 import de.raidcraft.permissions.PermissionsPlugin;
-import de.raidcraft.permissions.groups.Group;
 import de.raidcraft.util.UUIDUtil;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
