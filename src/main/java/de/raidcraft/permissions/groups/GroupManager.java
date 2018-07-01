@@ -55,7 +55,7 @@ public class GroupManager implements de.raidcraft.api.permissions.GroupManager {
     @Override
     public void updateGroupPermissions(Group group) {
 
-        // we need to create a permission with the group name for group perm lookups
+        // we need to create a permission with the group displayName for group perm lookups
         Permission perm = plugin.getServer().getPluginManager().getPermission(group.getGlobalMasterPermission());
         if (perm == null) {
             perm = new Permission(group.getGlobalMasterPermission());
@@ -166,9 +166,9 @@ public class GroupManager implements de.raidcraft.api.permissions.GroupManager {
     }
 
     /**
-     * Gets the specified group by name (case-insensitive)
+     * Gets the specified group by displayName (case-insensitive)
      *
-     * @param group The group's name.
+     * @param group The group's displayName.
      *
      * @return the group instance, or null
      */

@@ -17,7 +17,7 @@ import java.util.*;
 public class SimpleGroup implements Group {
 
     private final BasePlugin plugin;
-    // the name of this group
+    // the displayName of this group
     private final String name;
     private final Map<String, Set<String>> worldPermissions;
     private final Set<String> globalPermissions;
@@ -205,7 +205,7 @@ public class SimpleGroup implements Group {
     @Override
     public String toString() {
 
-        return "SimpleGroup{name=" + this.name + "}" + this.worldPermissions.toString().hashCode();
+        return "SimpleGroup{displayName=" + this.name + "}" + this.worldPermissions.toString().hashCode();
     }
 
     @Override

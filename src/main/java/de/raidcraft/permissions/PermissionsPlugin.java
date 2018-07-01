@@ -102,7 +102,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
     // TODO: UUID
     public boolean hasPermission(String name, String permission) {
 
-        //RaidCraft.LOGGER.info("[RCPERM] hasPerm.: " + name + " | " + permission);
+        //RaidCraft.LOGGER.info("[RCPERM] hasPerm.: " + displayName + " | " + permission);
 
         UUID playerId = UUIDUtil.convertPlayer(name);
         Player player = Bukkit.getPlayer(playerId);
