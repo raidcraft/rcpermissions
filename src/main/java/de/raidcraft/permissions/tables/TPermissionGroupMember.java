@@ -1,7 +1,7 @@
 package de.raidcraft.permissions.tables;
 
 
-import com.avaje.ebean.validation.NotNull;
+import io.ebean.annotation.NotNull;
 import lombok.Data;
 
 import javax.persistence.Column;
