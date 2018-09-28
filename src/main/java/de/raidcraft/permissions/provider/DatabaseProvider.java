@@ -35,7 +35,7 @@ public class DatabaseProvider implements RCPermissionsProvider<PermissionsPlugin
 
     private void loadGroups() {
         String sql = "SELECT DISTINCT group_ FROM rc_permission";
-        List<SqlRow> rows = plugin.getDatabase().createSqlQuery(sql).findList();
+        List<SqlRow> rows = plugin.getRcDatabase().createSqlQuery(sql).findList();
         rows.stream().forEach(row -> loadGroup(row.getString("group_")));
         // try to find default group
         for (Group group : groups) {
@@ -49,7 +49,7 @@ public class DatabaseProvider implements RCPermissionsProvider<PermissionsPlugin
     private void loadGroup(String name) {
         Map<String, Set<String>> sortedPerms = new HashMap<>();
         Set<String> globalPerm = new HashSet<>();
-        List<TPermission> perms = plugin.getDatabase()
+        List<TPermission> perms = plugin.getRcDatabase()
                 .find(TPermission.class)
                 .where()
                 .eq("group_", name)
@@ -71,7 +71,7 @@ public class DatabaseProvider implements RCPermissionsProvider<PermissionsPlugin
 
     @Override
     public Set<String> getPlayerGroups(UUID player) {
-        Set<String> playerGroups = plugin.getDatabase().find(TPermissionGroupMember.class)
+        Set<String> playerGroups = plugin.getRcDatabase().find(TPermissionGroupMember.class)
                 .where()
                 .eq("player", player.toString())
                 .findList()
