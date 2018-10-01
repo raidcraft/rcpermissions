@@ -1,0 +1,3 @@
+entity-packages: de.raidcraft.permissions
+transactional-packages: de.raidcraft.permissions
+querybean-packages: de.raidcraft.permissions

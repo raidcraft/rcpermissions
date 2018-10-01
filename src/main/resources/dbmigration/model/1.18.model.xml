@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="rc_permission" pkName="pk_rc_permission">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="group_" type="varchar" notnull="true"/>
+            <column name="permission" type="varchar" notnull="true"/>
+            <column name="world" type="varchar"/>
+            <column name="comment" type="clob"/>
+        </createTable>
+        <createTable name="rc_permission_group_member" pkName="pk_rc_permission_group_member">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player" type="uuid" notnull="true"/>
+            <column name="group_" type="varchar" notnull="true"/>
+            <column name="world" type="varchar"/>
+        </createTable>
+    </changeSet>
+</migration>
