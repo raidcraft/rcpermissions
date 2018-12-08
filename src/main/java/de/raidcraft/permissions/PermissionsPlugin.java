@@ -41,13 +41,16 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
         playerManager = new PlayerManager(this);
         groupManager = new GroupManager(this);
         RaidCraft.setPermissionGroupManager(groupManager);
+    }
+
+    @Override
+    public void loadDependencyConfigs() {
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             registerPermissions();
             updatePermissions();
-        }, 2 * 20);
-
+        }, 20);
     }
 
     @Override
