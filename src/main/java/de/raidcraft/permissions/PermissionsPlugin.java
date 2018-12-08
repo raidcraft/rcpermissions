@@ -47,10 +47,7 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
     public void loadDependencyConfigs() {
 
         // lets wait 1 tick after all plugins loaded and then register all permissions from all providers
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
-            registerPermissions();
-            updatePermissions();
-        }, 20);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, this::updatePermissions, 20);
     }
 
     @Override
@@ -74,12 +71,6 @@ public class PermissionsPlugin extends BasePlugin implements PermissionsResolver
             getServer().shutdown();
         }
         return provider;
-    }
-
-    private void registerPermissions() {
-
-        playerManager = new PlayerManager(this);
-        groupManager = new GroupManager(this);
     }
 
     private void updatePermissions() {
